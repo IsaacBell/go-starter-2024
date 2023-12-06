@@ -1,0 +1,21 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/Soapstone-Services/stem-finder-core.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[checkout]
+	defaultRemote = origin
+[branch "main"]
+	github-pr-base-branch = "Soapstone-Services#stem-finder-core#master"
+[remote "template"]
+	url = git@github.com:Soapstone-Services/go-starter-2024.git
+	fetch = +refs/heads/*:refs/remotes/template/*
+[remote "t1"]
+	url = git@github.com:Soapstone-Services/go-starter-2024.git
+	fetch = +refs/heads/*:refs/remotes/t1/*

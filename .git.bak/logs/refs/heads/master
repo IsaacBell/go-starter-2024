@@ -1,0 +1,15 @@
+0000000000000000000000000000000000000000 d6784b2bbd571630d3389301d73c15a72791ce5f Unknown <unknown@content-init.(none)> 1700945644 +0000	clone: from https://github.com/Soapstone-Services/stem-finder-core.git
+d6784b2bbd571630d3389301d73c15a72791ce5f 5ddaeb573b0d3e15252e5c3326d59e48beea313b Isaac Bell <isaacbell388@gmail.com> 1700947643 +0000	commit: (fix) use stem-finder-core in git links
+5ddaeb573b0d3e15252e5c3326d59e48beea313b 4c9db624b5285c99ee4f324df8cb43739b147822 Isaac Bell <isaacbell388@gmail.com> 1700947675 +0000	commit: (config) add default .gitpod.yml
+4c9db624b5285c99ee4f324df8cb43739b147822 314ecae1ccfcf91f2b1413b3c44b702998cf97f5 Isaac Bell <isaacbell388@gmail.com> 1700949755 +0000	commit: (fix - package) change package name to "stems"
+314ecae1ccfcf91f2b1413b3c44b702998cf97f5 59878795e68afaa530f3598fce0914c5a72a0ab5 Isaac Bell <isaacbell388@gmail.com> 1700950604 +0000	commit: (fix) add debugging files to gitignore
+59878795e68afaa530f3598fce0914c5a72a0ab5 1d43eec3e0bb9d90cf52fde31e50dcda1572ec3c Isaac Bell <isaacbell388@gmail.com> 1700961498 +0000	commit: (documentation) API docs
+1d43eec3e0bb9d90cf52fde31e50dcda1572ec3c f71abb6592f012d6747e06a547424c8644078600 Isaac Bell <isaacbell388@gmail.com> 1701015556 +0000	commit: (docs) update readme
+f71abb6592f012d6747e06a547424c8644078600 c7f1f71414343226c2f47c61841b0dfcb8ca6166 Isaac Bell <isaacbell388@gmail.com> 1701024892 +0000	commit: (feat - prometheus) add handler to web server
+c7f1f71414343226c2f47c61841b0dfcb8ca6166 c6e95295ae82b303b16c7dce91cff9725b015bc2 Isaac Bell <isaacbell388@gmail.com> 1701031797 +0000	commit: (dependency - echo) upgrade echo to v4
+c6e95295ae82b303b16c7dce91cff9725b015bc2 076c7cf0de3611e51c57d6bc021f6c8708f5678e Isaac Bell <isaacbell388@gmail.com> 1701033217 +0000	commit: (fix - server) server improvements
+076c7cf0de3611e51c57d6bc021f6c8708f5678e be46c9a5df9c725ab6452014add5691b82e2c38b Isaac Bell <isaacbell388@gmail.com> 1701034439 +0000	commit: (feat - audius) Add temp audius url
+be46c9a5df9c725ab6452014add5691b82e2c38b 20ef761f7445dda8df20ce20ba42c715d9014f04 Isaac Bell <isaacbell388@gmail.com> 1701047943 +0000	commit: (feat - audius) add endpoint for track search
+20ef761f7445dda8df20ce20ba42c715d9014f04 4ce2296e57e7c2d5e6d1ac21dc8ee10f498b1923 Isaac Bell <isaacbell388@gmail.com> 1701213083 +0000	commit: (feat - api) use "/tracks" as tracks endpoint
+4ce2296e57e7c2d5e6d1ac21dc8ee10f498b1923 b4342356d7fc73539c5271f683155a77c2ad0e0f Isaac Bell <isaacbell388@gmail.com> 1701213109 +0000	commit (merge): Merge branch 'master' of https://github.com/Soapstone-Services/stem-finder-core
+b4342356d7fc73539c5271f683155a77c2ad0e0f 123860ef495e47d1d2c02ca90ab1055d515a5f09 Isaac Bell <isaacbell388@gmail.com> 1701229372 +0000	commit: (refactor) make api calls re-usable

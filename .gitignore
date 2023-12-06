@@ -1,0 +1,8 @@
+profile.out
+coverage.txt
+cmd/api/config/files/config.dev.yaml
+.idea/
+local/
+.DS_Store
+**/__debug_bin*
+_routes.json
