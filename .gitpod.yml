@@ -5,10 +5,11 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: go get && go build ./... && go test ./...
-    command: pg_start
+  - init: pg_start
+    command: go get && go build ./... && go test ./...
   - command: go run .
-image: gitpod/workspace-postgres
-ports:
-    - port: 3000-3005
-      onOpen: ignore
+image: 
+  gitpod/workspace-postgres
+# ports:
+#     - port: 3000-3005
+#       onOpen: ignore
