@@ -12,6 +12,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 
 	// "github.com/Soapstone-Services/go-template-2024/pkg/utl/middleware/secure"
 
@@ -32,16 +33,39 @@ func New() *echo.Echo {
 	e.Use(middleware.Recover())
 
 	v1 := e.Group("/v1")
+
+	/* TODO: uncomment and test */
 	v1.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
-		if username == "CHANGEME" && password == "CHANGEME" {
+		// authUsername := "changeme"
+		// val, ok := os.LookupEnv("V1_AUTH_USER")
+		// fmt.Println("HERE")
+		// if !ok {
+		// 	fmt.Printf("HTTP Basic Auth username not set!\n")
+		// } else {
+		// 	authUsername = val
+		// }
+
+		// authPassword := "changeme"
+		// val, ok = os.LookupEnv("V1_AUTH_PASS")
+		// if !ok {
+		// 	fmt.Printf("HTTP Basic Auth password not set!\n")
+		// } else {
+		// 	authPassword = val
+		// }
+
+		// if username == authUsername && password == authPassword {
+		if username == "changeme" && password == "changeme" {
 			return true, nil
 		}
+
 		return false, nil
 	}))
 
 	// expose metrics for analytics collection
 	// see Prometheus: https://prometheus.io/
 	e.GET("/metrics", prometheusHandlerFunc())
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.GET("/", healthCheck)
 	e.GET("/v1", healthCheck)

@@ -2,11 +2,19 @@
 
 A starter for Go API micro-services. 
 
+## PostgreSQL Quick Start
+
+```shell
+$ docker pull postgres:15.1
+$ docker run -d -p 5432:5432 --name postgresDB15 -e POSTGRES_PASSWORD=pass1234 postgres:15.1
+$ docker start postgresDB15
+```
+
 ### Dependencies
 
 ```bash
 |-------------------------------------|--------------------------------------------|--------------|
-|             DEPENDENCY              |                  REPOURL                   |   LICENSE    |
+|             DEPENDENCY              |                  REPO URL                  |   LICENSE    |
 |-------------------------------------|--------------------------------------------|--------------|
 | github.com/labstack/echo/v4         | https://github.com/labstack/echo/v4        | MIT          |
 | github.com/go-pg/pg                 | https://github.com/go-pg/pg                | bsd-2-clause |
@@ -115,7 +123,11 @@ Instead of passing database client as `s.db` , inside this function pass it as `
 The following environment variables must be set:
 
 * ENVIRONMENT_NAME
-* DATABASE_URL
+* PG_URL
+* PG_USER
+* PG_PASS
+* V1_AUTH_USER
+* V1_AUTH_PASS
 * JWT_SECRET
 
 ## Contributing

@@ -5,11 +5,14 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: pg_start
-    command: go get && go build ./... && go test ./...
+  - init: docker pull postgres:15.1
+  - command: docker run -d -p 5432:5432 --name dev -e POSTGRES_PASSWORD=pass1234 postgres:15.1
+  - command: sleep 0.5s &&
+  - command: docker start postgresDB15
+  - command: go get && go build ./... && go test ./...
   - command: go run .
 image: 
   gitpod/workspace-postgres
-# ports:
-#     - port: 3000-3005
-#       onOpen: ignore
+ports:
+    - port: 0001-9999
+      onOpen: notify

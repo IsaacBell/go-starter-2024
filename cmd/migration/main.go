@@ -20,7 +20,7 @@ func main() {
 	INSERT INTO public.roles VALUES (120, 120, 'COMPANY_ADMIN');
 	INSERT INTO public.roles VALUES (130, 130, 'LOCATION_ADMIN');
 	INSERT INTO public.roles VALUES (200, 200, 'USER');`
-	var psn = os.Getenv("DATABASE_URL")
+	var psn = os.Getenv("PG_URL")
 	queries := strings.Split(dbInsert, ";")
 
 	u, err := pg.ParseURL(psn)
