@@ -2,9 +2,33 @@
 
 A starter for Go API micro-services. 
 
-## PostgreSQL Quick Start
+## Pre-Requisites
 
-```shell
+You will need Docker and Go (1.7 or above) installed before setting up the app.
+
+## Setup
+
+You will need to install Go 1.7 or above. Then configure the following:
+
+1. Change the configuration file
+
+2. Set the ("ENVIRONMENT_NAME") environment variable, either using terminal or os.Setenv("ENVIRONMENT_NAME","dev").
+
+3. Set the JWT secret env var ("JWT_SECRET")
+
+4. In cmd/migration/main.go set up psn variable and then run it (go run main.go). It will create all tables, and necessary data, with a new account username/password admin/admin.
+
+5. Run the app using:
+
+```bash
+go run cmd/api/main.go
+```
+
+## Installation
+
+First, install PostgreSQL and InfluxDB.
+
+```bash
 $ docker pull postgres:15.1
 $ docker run -d -p 5432:5432 --name postgresDB15 -e POSTGRES_PASSWORD=pass1234 postgres:15.1
 $ docker start postgresDB15
@@ -12,7 +36,7 @@ $ docker start postgresDB15
 
 ## Running the App
 
-```shell
+```bash
 go clean && go build && go run ./cmd/api/main.go
 ```
 
@@ -48,23 +72,21 @@ go clean && go build && go run ./cmd/api/main.go
 10. DockerTest - Testing database queries
 11. Testify/Assert - Asserting test results
 
-## Getting started
+## Accessing Tools
 
-You will need to install Go 1.7 or above. Then configure the following:
-
-1. Change the configuration file
-
-2. Set the ("ENVIRONMENT_NAME") environment variable, either using terminal or os.Setenv("ENVIRONMENT_NAME","dev").
-
-3. Set the JWT secret env var ("JWT_SECRET")
-
-4. In cmd/migration/main.go set up psn variable and then run it (go run main.go). It will create all tables, and necessery data, with a new account username/password admin/admin.
-
-5. Run the app using:
+Connecting to postgres:
 
 ```bash
-go run cmd/api/main.go
+$ docker exec -it -u postgres postgresDB15 psql
 ```
+
+Connect to InfluxDB:
+
+```bash
+$ docker-compose --env-file dev_influxdb.env up
+```
+
+## Code Considerations
 
 ### Implementing CRUD of another table
 
@@ -137,6 +159,8 @@ The following environment variables must be set:
 * JWT_SECRET
 
 ## Contributing
+
+We loosely follow a trunk-based protocol.
 
 ## Common Errors
 
