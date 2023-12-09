@@ -6,3 +6,8 @@ local/
 .DS_Store
 **/__debug_bin*
 _routes.json
+output
+tmp*
+tmp/*
+**.bak*
+.git.bak*
