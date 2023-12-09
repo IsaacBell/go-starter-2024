@@ -11,3 +11,4 @@ tmp*
 tmp/*
 **.bak*
 .git.bak*
+.env

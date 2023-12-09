@@ -8,25 +8,15 @@ You will need Docker and Go (1.7 or above) installed before setting up the app.
 
 ## Setup
 
-You will need to install Go 1.7 or above. Then configure the following:
-
-1. Change the configuration file
-
-2. Set the ("ENVIRONMENT_NAME") environment variable, either using terminal or os.Setenv("ENVIRONMENT_NAME","dev").
-
-3. Set the JWT secret env var ("JWT_SECRET")
-
-4. In cmd/migration/main.go set up psn variable and then run it (go run main.go). It will create all tables, and necessary data, with a new account username/password admin/admin.
-
-5. Run the app using:
+You must configure your environment before running the app. To configure the app as a default development environment, run the following command to generate a `.env` file.
 
 ```bash
-go run cmd/api/main.go
+$ cp .env.example .env
 ```
 
 ## Installation
 
-First, install PostgreSQL and InfluxDB.
+Install PostgreSQL.
 
 ```bash
 $ docker pull postgres:15.1
@@ -34,43 +24,17 @@ $ docker run -d -p 5432:5432 --name postgresDB15 -e POSTGRES_PASSWORD=pass1234 p
 $ docker start postgresDB15
 ```
 
+Install InfluxDB.
+
+```bash
+$ docker-compose --env-file .env up
+```
+
 ## Running the App
 
 ```bash
 go clean && go build && go run ./cmd/api/main.go
 ```
-
-### Dependencies
-
-```bash
-|-------------------------------------|--------------------------------------------|--------------|
-|             DEPENDENCY              |                  REPO URL                  |   LICENSE    |
-|-------------------------------------|--------------------------------------------|--------------|
-| github.com/labstack/echo/v4         | https://github.com/labstack/echo/v4        | MIT          |
-| github.com/go-pg/pg                 | https://github.com/go-pg/pg                | bsd-2-clause |
-| github.com/dgrijalva/jwt-go         | https://github.com/dgrijalva/jwt-go        | MIT          |
-| github.com/rs/zerolog               | https://github.com/rs/zerolog              | MIT          |
-| golang.org/x/crypto/bcrypt          | https://github.com/golang/crypto           |              |
-| gopkg.in/yaml.v2                    | https://github.com/go-yaml/yaml            |              |
-| gopkg.in/go-playground/validator.v8 | https://github.com/go-playground/validator | MIT          |
-| github.com/lib/pq                   | https://github.com/lib/pq                  | Other        |
-| github.com/nbutton23/zxcvbn-go      | https://github.com/nbutton23/zxcvbn-go     | MIT          |
-| github.com/fortytw2/dockertest      | https://github.com/fortytw2/dockertest     | MIT          |
-| github.com/stretchr/testify         | https://github.com/stretchr/testify        | Other        |
-|-------------------------------------|--------------------------------------------|--------------|
-```
-
-1. Echo - HTTP 'framework'.
-2. Go-Pg - PostgreSQL ORM
-3. JWT-Go - JWT Authentication
-4. Zerolog - Structured logging
-5. Bcrypt - Password hashing
-6. Yaml - Unmarshalling YAML config file
-7. Validator - Request validation.
-8. lib/pq - PostgreSQL driver
-9. zxcvbn-go - Password strength checker
-10. DockerTest - Testing database queries
-11. Testify/Assert - Asserting test results
 
 ## Accessing Tools
 
@@ -148,15 +112,7 @@ Instead of passing database client as `s.db` , inside this function pass it as `
 
 ## Deployment
 
-The following environment variables must be set:
 
-* ENVIRONMENT_NAME
-* PG_URL
-* PG_USER
-* PG_PASS
-* V1_AUTH_USER
-* V1_AUTH_PASS
-* JWT_SECRET
 
 ## Contributing
 

@@ -36,6 +36,12 @@ import (
 
 // Start starts the API service
 func Start(cfg *config.Configuration) error {
+	url := postgresAddr() // try to use .env first
+
+	if url == "" {
+		url = cfg.DB.Url // fall back to yaml config
+	}
+
 	db, err := postgres.New(cfg.DB.Url, cfg.DB.Timeout, cfg.DB.LogQueries)
 	if err != nil {
 		return err
@@ -111,4 +117,17 @@ func Start(cfg *config.Configuration) error {
 
 func isProd() bool {
 	return os.Getenv("ENVIRONMENT_NAME") == "production"
+}
+
+func postgresAddr() string {
+	user   := os.Getenv("PG_USER")
+	pass   := os.Getenv("PG_PASS")
+	dbUrl  := os.Getenv("PG_URL")
+	dbName := os.Getenv("PG_DB")
+
+	if (user == "" || pass == "" || dbUrl == "" || dbName == "") {
+		return ""
+	}
+
+	return "postgres://" + user + ":" + pass + "@" + dbUrl + "/" + dbName + "?sslmode=disable"
 }
