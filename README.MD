@@ -10,6 +10,12 @@ $ docker run -d -p 5432:5432 --name postgresDB15 -e POSTGRES_PASSWORD=pass1234 p
 $ docker start postgresDB15
 ```
 
+## Running the App
+
+```shell
+go clean && go build && go run ./cmd/api/main.go
+```
+
 ### Dependencies
 
 ```bash
