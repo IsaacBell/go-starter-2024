@@ -10,7 +10,7 @@ import (
 )
 
 // New creates new auth logging service
-func New(svc auth.Service, logger stems.Logger) *LogService {
+func New(svc auth.Service, logger echo.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,
@@ -20,7 +20,7 @@ func New(svc auth.Service, logger stems.Logger) *LogService {
 // LogService represents auth logging service
 type LogService struct {
 	auth.Service
-	logger stems.Logger
+	logger echo.Logger
 }
 
 const name = "auth"
@@ -28,7 +28,7 @@ const name = "auth"
 // Authenticate logging
 func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp stems.AuthToken, err error) {
 	defer func(begin time.Time) {
-		ls.logger.Log(
+		ls.logger.Info(
 			c,
 			name, "Authenticate request", err,
 			map[string]interface{}{
@@ -43,7 +43,7 @@ func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp 
 // Refresh logging
 func (ls *LogService) Refresh(c echo.Context, req string) (token string, err error) {
 	defer func(begin time.Time) {
-		ls.logger.Log(
+		ls.logger.Info(
 			c,
 			name, "Refresh request", err,
 			map[string]interface{}{
@@ -59,7 +59,7 @@ func (ls *LogService) Refresh(c echo.Context, req string) (token string, err err
 // Me logging
 func (ls *LogService) Me(c echo.Context) (resp stems.User, err error) {
 	defer func(begin time.Time) {
-		ls.logger.Log(
+		ls.logger.Info(
 			c,
 			name, "Me request", err,
 			map[string]interface{}{

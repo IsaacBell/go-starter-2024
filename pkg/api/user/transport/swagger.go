@@ -1,6 +1,6 @@
 package transport
 
-import stems "github.com/Soapstone-Services/template-01"
+import stems "github.com/Soapstone-Services/go-template-2024"
 
 // User model response
 // swagger:response userResp

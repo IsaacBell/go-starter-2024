@@ -1,25 +1,31 @@
 package api
 
 import (
+	// "crypto/subtle"
+	"crypto/sha1"
 	"fmt"
 	"os"
 	"strings"
 
 	// "github.com/Soapstone-Services/go-template-2024/pkg/utl/zlog"
-	// "github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
-	// al "github.com/Soapstone-Services/go-template-2024/pkg/api/auth/logging"
-	// at "github.com/Soapstone-Services/go-template-2024/pkg/api/auth/transport"
-	// "github.com/Soapstone-Services/go-template-2024/pkg/api/password"
-	// pl "github.com/Soapstone-Services/go-template-2024/pkg/api/password/logging"
-	// pt "github.com/Soapstone-Services/go-template-2024/pkg/api/password/transport"
-	// "github.com/Soapstone-Services/go-template-2024/pkg/api/user"
-	// ul "github.com/Soapstone-Services/go-template-2024/pkg/api/user/logging"
-	// ut "github.com/Soapstone-Services/go-template-2024/pkg/api/user/transport"
+	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
+	al "github.com/Soapstone-Services/go-template-2024/pkg/api/auth/logging"
+	at "github.com/Soapstone-Services/go-template-2024/pkg/api/auth/transport"
+	"github.com/Soapstone-Services/go-template-2024/pkg/api/password"
+	pl "github.com/Soapstone-Services/go-template-2024/pkg/api/password/logging"
+	pt "github.com/Soapstone-Services/go-template-2024/pkg/api/password/transport"
+	"github.com/Soapstone-Services/go-template-2024/pkg/api/user"
+	ul "github.com/Soapstone-Services/go-template-2024/pkg/api/user/logging"
+	ut "github.com/Soapstone-Services/go-template-2024/pkg/api/user/transport"
 	authMw "github.com/Soapstone-Services/go-template-2024/pkg/utl/middleware/auth"
 
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/config"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/postgres"
+	"github.com/Soapstone-Services/go-template-2024/pkg/utl/rbac"
+	"github.com/Soapstone-Services/go-template-2024/pkg/utl/secure"
+
 	"github.com/labstack/echo/v4"
+	// "github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/rs/zerolog"
 	"github.com/ziflex/lecho/v3"
@@ -36,8 +42,8 @@ func Start(cfg *config.Configuration) error {
 	}
 	fmt.Println("DB Addr: ", db.Options().Addr)
 
-	// sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
-	// rbac := rbac.Service{}
+	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
+	rbac := rbac.Service{}
 
 	if !isProd() {
 		os.Setenv("JWT_SECRET", strings.Repeat("12345678", 8))
@@ -65,7 +71,7 @@ func Start(cfg *config.Configuration) error {
 		lecho.WithTimestamp(),
 		lecho.WithCaller(),
 		lecho.WithFields(map[string]interface{}{
-			"service": "template01",
+			"service": "go-template-2024",
 			"type":    "api",
 		}),
 	)
@@ -85,13 +91,13 @@ func Start(cfg *config.Configuration) error {
 
 	authMiddleware := authMw.Middleware(jwt)
 
-	// at.NewHTTP(al.New(auth.Initialize(db, jwt, sec, rbac), log), e, authMiddleware)
+	at.NewHTTP(al.New(auth.Initialize(db, jwt, sec, rbac), logger), e, authMiddleware)
 
 	v1 := e.Group("/v1")
-	v1.Use(authMiddleware)
+	// v1.Use(authMiddleware)
 
-	// ut.NewHTTP(ul.New(user.Initialize(db, rbac, sec), log), v1)
-	// pt.NewHTTP(pl.New(password.Initialize(db, rbac, sec), log), v1)
+	ut.NewHTTP(ul.New(user.Initialize(db, rbac, sec), logger), v1)
+	pt.NewHTTP(pl.New(password.Initialize(db, rbac, sec), logger), v1)
 
 	server.Start(e, &server.Config{
 		Port:                cfg.Server.Port,

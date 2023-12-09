@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"crypto/subtle"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -33,17 +35,24 @@ func New() *echo.Echo {
 	e.Use(middleware.Recover())
 
 	v1 := e.Group("/v1")
+	v1.GET("/", healthCheck)
+	v1.GET("/health", healthCheck)
 
 	/* TODO: uncomment and test */
 	v1.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
-		// authUsername := "changeme"
-		// val, ok := os.LookupEnv("V1_AUTH_USER")
-		// fmt.Println("HERE")
-		// if !ok {
-		// 	fmt.Printf("HTTP Basic Auth username not set!\n")
-		// } else {
-		// 	authUsername = val
-		// }
+		if subtle.ConstantTimeCompare([]byte(username), []byte("changeme")) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), []byte("changeme")) == 1 {
+			return true, nil
+		}
+		fmt.Println("HERE")
+		authUsername := "changeme"
+		val, ok := os.LookupEnv("V1_AUTH_USER")
+		fmt.Println("au: ", authUsername)
+		if !ok {
+			fmt.Printf("HTTP Basic Auth username not set!\n")
+		} else {
+			authUsername = val
+		}
 
 		// authPassword := "changeme"
 		// val, ok = os.LookupEnv("V1_AUTH_PASS")
@@ -57,6 +66,8 @@ func New() *echo.Echo {
 		if username == "changeme" && password == "changeme" {
 			return true, nil
 		}
+		fmt.Println("u: ", username)
+		fmt.Println("p: ", password)
 
 		return false, nil
 	}))
@@ -68,7 +79,7 @@ func New() *echo.Echo {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.GET("/", healthCheck)
-	e.GET("/v1", healthCheck)
+	
 
 	e.Validator = &CustomValidator{V: validator.New()}
 	custErr := &customErrHandler{e: e}
