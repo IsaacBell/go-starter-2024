@@ -26,7 +26,7 @@ func TestLoad(t *testing.T) {
 		},
 		{
 			name: "Success",
-			path: "testdata/config.testdata.yaml",
+			path: "testdata/config.testtemplate.yaml",
 			wantData: &config.Configuration{
 				DB: &config.Database{
 					LogQueries: true,

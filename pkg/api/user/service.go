@@ -5,17 +5,17 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo/v4"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/user/platform/pgsql"
 )
 
 // Service represents user application interface
 type Service interface {
-	Create(echo.Context, stems.User) (stems.User, error)
-	List(echo.Context, stems.Pagination) ([]stems.User, error)
-	View(echo.Context, int) (stems.User, error)
+	Create(echo.Context, template.User) (template.User, error)
+	List(echo.Context, template.Pagination) ([]template.User, error)
+	View(echo.Context, int) (template.User, error)
 	Delete(echo.Context, int) error
-	Update(echo.Context, Update) (stems.User, error)
+	Update(echo.Context, Update) (template.User, error)
 }
 
 // New creates new user application service
@@ -43,17 +43,17 @@ type Securer interface {
 
 // UDB represents user repository interface
 type UDB interface {
-	Create(orm.DB, stems.User) (stems.User, error)
-	View(orm.DB, int) (stems.User, error)
-	List(orm.DB, *stems.ListQuery, stems.Pagination) ([]stems.User, error)
-	Update(orm.DB, stems.User) error
-	Delete(orm.DB, stems.User) error
+	Create(orm.DB, template.User) (template.User, error)
+	View(orm.DB, int) (template.User, error)
+	List(orm.DB, *template.ListQuery, template.Pagination) ([]template.User, error)
+	Update(orm.DB, template.User) error
+	Delete(orm.DB, template.User) error
 }
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
-	User(echo.Context) stems.AuthUser
+	User(echo.Context) template.AuthUser
 	EnforceUser(echo.Context, int) error
-	AccountCreate(echo.Context, stems.AccessRole, int, int) error
-	IsLowerRole(echo.Context, stems.AccessRole) error
+	AccountCreate(echo.Context, template.AccessRole, int, int) error
+	IsLowerRole(echo.Context, template.AccessRole) error
 }

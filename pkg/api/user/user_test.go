@@ -6,7 +6,7 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo/v4"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/user"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock/mockdb"
@@ -17,24 +17,24 @@ import (
 func TestCreate(t *testing.T) {
 	type args struct {
 		c   echo.Context
-		req stems.User
+		req template.User
 	}
 	cases := []struct {
 		name     string
 		args     args
 		wantErr  bool
-		wantData stems.User
+		wantData template.User
 		udb      *mockdb.User
 		rbac     *mock.RBAC
 		sec      *mock.Secure
 	}{{
 		name: "Fail on is lower role",
 		rbac: &mock.RBAC{
-			AccountCreateFn: func(echo.Context, stems.AccessRole, int, int) error {
-				return stems.ErrGeneric
+			AccountCreateFn: func(echo.Context, template.AccessRole, int, int) error {
+				return template.ErrGeneric
 			}},
 		wantErr: true,
-		args: args{req: stems.User{
+		args: args{req: template.User{
 			FirstName: "John",
 			LastName:  "Doe",
 			Username:  "JohnDoe",
@@ -44,7 +44,7 @@ func TestCreate(t *testing.T) {
 	},
 		{
 			name: "Success",
-			args: args{req: stems.User{
+			args: args{req: template.User{
 				FirstName: "John",
 				LastName:  "Doe",
 				Username:  "JohnDoe",
@@ -52,7 +52,7 @@ func TestCreate(t *testing.T) {
 				Password:  "Thranduil8822",
 			}},
 			udb: &mockdb.User{
-				CreateFn: func(db orm.DB, u stems.User) (stems.User, error) {
+				CreateFn: func(db orm.DB, u template.User) (template.User, error) {
 					u.CreatedAt = mock.TestTime(2000)
 					u.UpdatedAt = mock.TestTime(2000)
 					u.Base.ID = 1
@@ -60,7 +60,7 @@ func TestCreate(t *testing.T) {
 				},
 			},
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(echo.Context, stems.AccessRole, int, int) error {
+				AccountCreateFn: func(echo.Context, template.AccessRole, int, int) error {
 					return nil
 				}},
 			sec: &mock.Secure{
@@ -68,8 +68,8 @@ func TestCreate(t *testing.T) {
 					return "h4$h3d"
 				},
 			},
-			wantData: stems.User{
-				Base: stems.Base{
+			wantData: template.User{
+				Base: template.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(2000),
 					UpdatedAt: mock.TestTime(2000),
@@ -98,7 +98,7 @@ func TestView(t *testing.T) {
 	cases := []struct {
 		name     string
 		args     args
-		wantData stems.User
+		wantData template.User
 		wantErr  error
 		udb      *mockdb.User
 		rbac     *mock.RBAC
@@ -108,15 +108,15 @@ func TestView(t *testing.T) {
 			args: args{id: 5},
 			rbac: &mock.RBAC{
 				EnforceUserFn: func(c echo.Context, id int) error {
-					return stems.ErrGeneric
+					return template.ErrGeneric
 				}},
-			wantErr: stems.ErrGeneric,
+			wantErr: template.ErrGeneric,
 		},
 		{
 			name: "Success",
 			args: args{id: 1},
-			wantData: stems.User{
-				Base: stems.Base{
+			wantData: template.User{
+				Base: template.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(2000),
 					UpdatedAt: mock.TestTime(2000),
@@ -130,10 +130,10 @@ func TestView(t *testing.T) {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
 					if id == 1 {
-						return stems.User{
-							Base: stems.Base{
+						return template.User{
+							Base: template.Base{
 								ID:        1,
 								CreatedAt: mock.TestTime(2000),
 								UpdatedAt: mock.TestTime(2000),
@@ -143,7 +143,7 @@ func TestView(t *testing.T) {
 							Username:  "JohnDoe",
 						}, nil
 					}
-					return stems.User{}, nil
+					return template.User{}, nil
 				}},
 		},
 	}
@@ -160,52 +160,52 @@ func TestView(t *testing.T) {
 func TestList(t *testing.T) {
 	type args struct {
 		c   echo.Context
-		pgn stems.Pagination
+		pgn template.Pagination
 	}
 	cases := []struct {
 		name     string
 		args     args
-		wantData []stems.User
+		wantData []template.User
 		wantErr  bool
 		udb      *mockdb.User
 		rbac     *mock.RBAC
 	}{
 		{
 			name: "Fail on query List",
-			args: args{c: nil, pgn: stems.Pagination{
+			args: args{c: nil, pgn: template.Pagination{
 				Limit:  100,
 				Offset: 200,
 			}},
 			wantErr: true,
 			rbac: &mock.RBAC{
-				UserFn: func(c echo.Context) stems.AuthUser {
-					return stems.AuthUser{
+				UserFn: func(c echo.Context) template.AuthUser {
+					return template.AuthUser{
 						ID:         1,
 						CompanyID:  2,
 						LocationID: 3,
-						Role:       stems.UserRole,
+						Role:       template.UserRole,
 					}
 				}}},
 		{
 			name: "Success",
-			args: args{c: nil, pgn: stems.Pagination{
+			args: args{c: nil, pgn: template.Pagination{
 				Limit:  100,
 				Offset: 200,
 			}},
 			rbac: &mock.RBAC{
-				UserFn: func(c echo.Context) stems.AuthUser {
-					return stems.AuthUser{
+				UserFn: func(c echo.Context) template.AuthUser {
+					return template.AuthUser{
 						ID:         1,
 						CompanyID:  2,
 						LocationID: 3,
-						Role:       stems.AdminRole,
+						Role:       template.AdminRole,
 					}
 				}},
 			udb: &mockdb.User{
-				ListFn: func(orm.DB, *stems.ListQuery, stems.Pagination) ([]stems.User, error) {
-					return []stems.User{
+				ListFn: func(orm.DB, *template.ListQuery, template.Pagination) ([]template.User, error) {
+					return []template.User{
 						{
-							Base: stems.Base{
+							Base: template.Base{
 								ID:        1,
 								CreatedAt: mock.TestTime(1999),
 								UpdatedAt: mock.TestTime(2000),
@@ -216,7 +216,7 @@ func TestList(t *testing.T) {
 							Username:  "johndoe",
 						},
 						{
-							Base: stems.Base{
+							Base: template.Base{
 								ID:        2,
 								CreatedAt: mock.TestTime(2001),
 								UpdatedAt: mock.TestTime(2002),
@@ -228,9 +228,9 @@ func TestList(t *testing.T) {
 						},
 					}, nil
 				}},
-			wantData: []stems.User{
+			wantData: []template.User{
 				{
-					Base: stems.Base{
+					Base: template.Base{
 						ID:        1,
 						CreatedAt: mock.TestTime(1999),
 						UpdatedAt: mock.TestTime(2000),
@@ -241,7 +241,7 @@ func TestList(t *testing.T) {
 					Username:  "johndoe",
 				},
 				{
-					Base: stems.Base{
+					Base: template.Base{
 						ID:        2,
 						CreatedAt: mock.TestTime(2001),
 						UpdatedAt: mock.TestTime(2002),
@@ -279,13 +279,13 @@ func TestDelete(t *testing.T) {
 		{
 			name:    "Fail on ViewUser",
 			args:    args{id: 1},
-			wantErr: stems.ErrGeneric,
+			wantErr: template.ErrGeneric,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
 					if id != 1 {
-						return stems.User{}, nil
+						return template.User{}, nil
 					}
-					return stems.User{}, stems.ErrGeneric
+					return template.User{}, template.ErrGeneric
 				},
 			},
 		},
@@ -293,53 +293,53 @@ func TestDelete(t *testing.T) {
 			name: "Fail on RBAC",
 			args: args{id: 1},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Base: stems.Base{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Base: template.Base{
 							ID:        id,
 							CreatedAt: mock.TestTime(1999),
 							UpdatedAt: mock.TestTime(2000),
 						},
 						FirstName: "John",
 						LastName:  "Doe",
-						Role: &stems.Role{
-							AccessLevel: stems.UserRole,
+						Role: &template.Role{
+							AccessLevel: template.UserRole,
 						},
 					}, nil
 				},
 			},
 			rbac: &mock.RBAC{
-				IsLowerRoleFn: func(echo.Context, stems.AccessRole) error {
-					return stems.ErrGeneric
+				IsLowerRoleFn: func(echo.Context, template.AccessRole) error {
+					return template.ErrGeneric
 				}},
-			wantErr: stems.ErrGeneric,
+			wantErr: template.ErrGeneric,
 		},
 		{
 			name: "Success",
 			args: args{id: 1},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Base: stems.Base{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Base: template.Base{
 							ID:        id,
 							CreatedAt: mock.TestTime(1999),
 							UpdatedAt: mock.TestTime(2000),
 						},
 						FirstName: "John",
 						LastName:  "Doe",
-						Role: &stems.Role{
-							AccessLevel: stems.AdminRole,
+						Role: &template.Role{
+							AccessLevel: template.AdminRole,
 							ID:          2,
 							Name:        "Admin",
 						},
 					}, nil
 				},
-				DeleteFn: func(db orm.DB, usr stems.User) error {
+				DeleteFn: func(db orm.DB, usr template.User) error {
 					return nil
 				},
 			},
 			rbac: &mock.RBAC{
-				IsLowerRoleFn: func(echo.Context, stems.AccessRole) error {
+				IsLowerRoleFn: func(echo.Context, template.AccessRole) error {
 					return nil
 				}},
 		},
@@ -363,7 +363,7 @@ func TestUpdate(t *testing.T) {
 	cases := []struct {
 		name     string
 		args     args
-		wantData stems.User
+		wantData template.User
 		wantErr  error
 		udb      *mockdb.User
 		rbac     *mock.RBAC
@@ -375,9 +375,9 @@ func TestUpdate(t *testing.T) {
 			}},
 			rbac: &mock.RBAC{
 				EnforceUserFn: func(c echo.Context, id int) error {
-					return stems.ErrGeneric
+					return template.ErrGeneric
 				}},
-			wantErr: stems.ErrGeneric,
+			wantErr: template.ErrGeneric,
 		},
 		{
 			name: "Fail on Update",
@@ -388,11 +388,11 @@ func TestUpdate(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id int) error {
 					return nil
 				}},
-			wantErr: stems.ErrGeneric,
+			wantErr: template.ErrGeneric,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Base: stems.Base{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Base: template.Base{
 							ID:        1,
 							CreatedAt: mock.TestTime(1990),
 							UpdatedAt: mock.TestTime(1991),
@@ -408,8 +408,8 @@ func TestUpdate(t *testing.T) {
 						Email:      "golang@go.org",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr stems.User) error {
-					return stems.ErrGeneric
+				UpdateFn: func(db orm.DB, usr template.User) error {
+					return template.ErrGeneric
 				},
 			},
 		},
@@ -426,8 +426,8 @@ func TestUpdate(t *testing.T) {
 				EnforceUserFn: func(c echo.Context, id int) error {
 					return nil
 				}},
-			wantData: stems.User{
-				Base: stems.Base{
+			wantData: template.User{
+				Base: template.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(1990),
 					UpdatedAt: mock.TestTime(2000),
@@ -443,9 +443,9 @@ func TestUpdate(t *testing.T) {
 				Email:      "golang@go.org",
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Base: stems.Base{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Base: template.Base{
 							ID:        1,
 							CreatedAt: mock.TestTime(1990),
 							UpdatedAt: mock.TestTime(2000),
@@ -461,7 +461,7 @@ func TestUpdate(t *testing.T) {
 						Email:      "golang@go.org",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr stems.User) error {
+				UpdateFn: func(db orm.DB, usr template.User) error {
 					usr.UpdatedAt = mock.TestTime(2000)
 					return nil
 				},

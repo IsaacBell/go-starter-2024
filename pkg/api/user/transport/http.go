@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/user"
 
 	"github.com/labstack/echo/v4"
@@ -150,9 +150,9 @@ type createReq struct {
 	PasswordConfirm string `json:"password_confirm" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 
-	CompanyID  int              `json:"company_id" validate:"required"`
-	LocationID int              `json:"location_id" validate:"required"`
-	RoleID     stems.AccessRole `json:"role_id" validate:"required"`
+	CompanyID  int                 `json:"company_id" validate:"required"`
+	LocationID int                 `json:"location_id" validate:"required"`
+	RoleID     template.AccessRole `json:"role_id" validate:"required"`
 }
 
 func (h HTTP) create(c echo.Context) error {
@@ -167,11 +167,11 @@ func (h HTTP) create(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	if r.RoleID < stems.SuperAdminRole || r.RoleID > stems.UserRole {
-		return stems.ErrBadRequest
+	if r.RoleID < template.SuperAdminRole || r.RoleID > template.UserRole {
+		return template.ErrBadRequest
 	}
 
-	usr, err := h.svc.Create(c, stems.User{
+	usr, err := h.svc.Create(c, template.User{
 		Username:   r.Username,
 		Password:   r.Password,
 		Email:      r.Email,
@@ -190,12 +190,12 @@ func (h HTTP) create(c echo.Context) error {
 }
 
 type listResponse struct {
-	Users []stems.User `json:"users"`
-	Page  int          `json:"page"`
+	Users []template.User `json:"users"`
+	Page  int             `json:"page"`
 }
 
 func (h HTTP) list(c echo.Context) error {
-	var req stems.PaginationReq
+	var req template.PaginationReq
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
@@ -212,7 +212,7 @@ func (h HTTP) list(c echo.Context) error {
 func (h HTTP) view(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return stems.ErrBadRequest
+		return template.ErrBadRequest
 	}
 
 	result, err := h.svc.View(c, id)
@@ -237,7 +237,7 @@ type updateReq struct {
 func (h HTTP) update(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return stems.ErrBadRequest
+		return template.ErrBadRequest
 	}
 
 	req := new(updateReq)
@@ -264,7 +264,7 @@ func (h HTTP) update(c echo.Context) error {
 func (h HTTP) delete(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return stems.ErrBadRequest
+		return template.ErrBadRequest
 	}
 
 	if err := h.svc.Delete(c, id); err != nil {

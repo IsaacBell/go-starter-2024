@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
 )
 
@@ -26,7 +26,7 @@ type LogService struct {
 const name = "auth"
 
 // Authenticate logging
-func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp stems.AuthToken, err error) {
+func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp template.AuthToken, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Info(
 			c,
@@ -57,7 +57,7 @@ func (ls *LogService) Refresh(c echo.Context, req string) (token string, err err
 }
 
 // Me logging
-func (ls *LogService) Me(c echo.Context) (resp stems.User, err error) {
+func (ls *LogService) Me(c echo.Context) (resp template.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Info(
 			c,

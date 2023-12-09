@@ -1,4 +1,4 @@
-package stems
+package template
 
 // Company represents company model
 type Company struct {

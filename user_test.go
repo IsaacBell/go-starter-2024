@@ -1,11 +1,13 @@
-package stems_test
+package template_test
 
 import (
 	"testing"
+
+	"github.com/Soapstone-Services/go-template-2024"
 )
 
 func TestChangePassword(t *testing.T) {
-	user := &stems.User{
+	user := &template.User{
 		FirstName: "TestGuy",
 	}
 
@@ -23,7 +25,7 @@ func TestChangePassword(t *testing.T) {
 }
 
 func TestUpdateLastLogin(t *testing.T) {
-	user := &stems.User{
+	user := &template.User{
 		FirstName: "TestGuy",
 	}
 

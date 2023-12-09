@@ -5,12 +5,12 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/user"
 )
 
 // New creates new user logging service
-func New(svc user.Service, logger stems.Logger) *LogService {
+func New(svc user.Service, logger echo.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,
@@ -20,16 +20,16 @@ func New(svc user.Service, logger stems.Logger) *LogService {
 // LogService represents user logging service
 type LogService struct {
 	user.Service
-	logger stems.Logger
+	logger echo.Logger
 }
 
 const name = "user"
 
 // Create logging
-func (ls *LogService) Create(c echo.Context, req stems.User) (resp stems.User, err error) {
+func (ls *LogService) Create(c echo.Context, req template.User) (resp template.User, err error) {
 	defer func(begin time.Time) {
 		req.Password = "xxx-redacted-xxx"
-		ls.logger.Log(
+		ls.logger.Debug(
 			c,
 			name, "Create user request", err,
 			map[string]interface{}{
@@ -43,9 +43,9 @@ func (ls *LogService) Create(c echo.Context, req stems.User) (resp stems.User, e
 }
 
 // List logging
-func (ls *LogService) List(c echo.Context, req stems.Pagination) (resp []stems.User, err error) {
+func (ls *LogService) List(c echo.Context, req template.Pagination) (resp []template.User, err error) {
 	defer func(begin time.Time) {
-		ls.logger.Log(
+		ls.logger.Debug(
 			c,
 			name, "List user request", err,
 			map[string]interface{}{
@@ -59,9 +59,9 @@ func (ls *LogService) List(c echo.Context, req stems.Pagination) (resp []stems.U
 }
 
 // View logging
-func (ls *LogService) View(c echo.Context, req int) (resp stems.User, err error) {
+func (ls *LogService) View(c echo.Context, req int) (resp template.User, err error) {
 	defer func(begin time.Time) {
-		ls.logger.Log(
+		ls.logger.Debug(
 			c,
 			name, "View user request", err,
 			map[string]interface{}{
@@ -77,7 +77,7 @@ func (ls *LogService) View(c echo.Context, req int) (resp stems.User, err error)
 // Delete logging
 func (ls *LogService) Delete(c echo.Context, req int) (err error) {
 	defer func(begin time.Time) {
-		ls.logger.Log(
+		ls.logger.Debug(
 			c,
 			name, "Delete user request", err,
 			map[string]interface{}{
@@ -90,9 +90,9 @@ func (ls *LogService) Delete(c echo.Context, req int) (err error) {
 }
 
 // Update logging
-func (ls *LogService) Update(c echo.Context, req user.Update) (resp stems.User, err error) {
+func (ls *LogService) Update(c echo.Context, req user.Update) (resp template.User, err error) {
 	defer func(begin time.Time) {
-		ls.logger.Log(
+		ls.logger.Debug(
 			c,
 			name, "Update user request", err,
 			map[string]interface{}{

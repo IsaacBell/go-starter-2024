@@ -1,4 +1,4 @@
-package stems
+package template
 
 // Location represents company location model
 type Location struct {

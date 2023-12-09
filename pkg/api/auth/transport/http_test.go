@@ -9,7 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth/transport"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/jwt"
@@ -27,7 +27,7 @@ func TestLogin(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   *stems.AuthToken
+		wantResp   *template.AuthToken
 		udb        *mockdb.User
 		jwt        *mock.JWT
 		sec        *mock.Secure
@@ -42,8 +42,8 @@ func TestLogin(t *testing.T) {
 			req:        `{"username":"juzernejm","password":"hunter123"}`,
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(orm.DB, string) (stems.User, error) {
-					return stems.User{}, stems.ErrGeneric
+				FindByUsernameFn: func(orm.DB, string) (template.User, error) {
+					return template.User{}, template.ErrGeneric
 				},
 			},
 		},
@@ -52,18 +52,18 @@ func TestLogin(t *testing.T) {
 			req:        `{"username":"juzernejm","password":"hunter123"}`,
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(orm.DB, string) (stems.User, error) {
-					return stems.User{
+				FindByUsernameFn: func(orm.DB, string) (template.User, error) {
+					return template.User{
 						Password: "hunter123",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u stems.User) error {
+				UpdateFn: func(db orm.DB, u template.User) error {
 					return nil
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(stems.User) (string, error) {
+				GenerateTokenFn: func(template.User) (string, error) {
 					return "jwttokenstring", nil
 				},
 			},
@@ -75,7 +75,7 @@ func TestLogin(t *testing.T) {
 					return "refreshtoken"
 				},
 			},
-			wantResp: &stems.AuthToken{Token: "jwttokenstring", RefreshToken: "refreshtoken"},
+			wantResp: &template.AuthToken{Token: "jwttokenstring", RefreshToken: "refreshtoken"},
 		},
 	}
 
@@ -92,7 +92,7 @@ func TestLogin(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(stems.AuthToken)
+				response := new(template.AuthToken)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -109,7 +109,7 @@ func TestRefresh(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   *stems.RefreshToken
+		wantResp   *template.RefreshToken
 		udb        *mockdb.User
 		jwt        *mock.JWT
 	}{
@@ -118,8 +118,8 @@ func TestRefresh(t *testing.T) {
 			req:        "refreshtoken",
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				FindByTokenFn: func(orm.DB, string) (stems.User, error) {
-					return stems.User{}, stems.ErrGeneric
+				FindByTokenFn: func(orm.DB, string) (template.User, error) {
+					return template.User{}, template.ErrGeneric
 				},
 			},
 		},
@@ -128,19 +128,19 @@ func TestRefresh(t *testing.T) {
 			req:        "refreshtoken",
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				FindByTokenFn: func(orm.DB, string) (stems.User, error) {
-					return stems.User{
+				FindByTokenFn: func(orm.DB, string) (template.User, error) {
+					return template.User{
 						Username: "johndoe",
 						Active:   true,
 					}, nil
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(stems.User) (string, error) {
+				GenerateTokenFn: func(template.User) (string, error) {
 					return "jwttokenstring", nil
 				},
 			},
-			wantResp: &stems.RefreshToken{Token: "jwttokenstring"},
+			wantResp: &template.RefreshToken{Token: "jwttokenstring"},
 		},
 	}
 
@@ -157,7 +157,7 @@ func TestRefresh(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(stems.RefreshToken)
+				response := new(template.RefreshToken)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -172,7 +172,7 @@ func TestMe(t *testing.T) {
 	cases := []struct {
 		name       string
 		wantStatus int
-		wantResp   stems.User
+		wantResp   template.User
 		header     string
 		udb        *mockdb.User
 		rbac       *mock.RBAC
@@ -181,13 +181,13 @@ func TestMe(t *testing.T) {
 			name:       "Fail on user view",
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				ViewFn: func(orm.DB, int) (stems.User, error) {
-					return stems.User{}, stems.ErrGeneric
+				ViewFn: func(orm.DB, int) (template.User, error) {
+					return template.User{}, template.ErrGeneric
 				},
 			},
 			rbac: &mock.RBAC{
-				UserFn: func(echo.Context) stems.AuthUser {
-					return stems.AuthUser{ID: 1}
+				UserFn: func(echo.Context) template.AuthUser {
+					return template.AuthUser{ID: 1}
 				},
 			},
 			header: mock.HeaderValid(),
@@ -196,9 +196,9 @@ func TestMe(t *testing.T) {
 			name:       "Success",
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, i int) (stems.User, error) {
-					return stems.User{
-						Base: stems.Base{
+				ViewFn: func(db orm.DB, i int) (template.User, error) {
+					return template.User{
+						Base: template.Base{
 							ID: i,
 						},
 						CompanyID:  2,
@@ -210,13 +210,13 @@ func TestMe(t *testing.T) {
 				},
 			},
 			rbac: &mock.RBAC{
-				UserFn: func(echo.Context) stems.AuthUser {
-					return stems.AuthUser{ID: 1}
+				UserFn: func(echo.Context) template.AuthUser {
+					return template.AuthUser{ID: 1}
 				},
 			},
 			header: mock.HeaderValid(),
-			wantResp: stems.User{
-				Base: stems.Base{
+			wantResp: template.User{
+				Base: template.Base{
 					ID: 1,
 				},
 				CompanyID:  2,
@@ -252,7 +252,7 @@ func TestMe(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp.ID != 0 {
-				var response stems.User
+				var response template.User
 				if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
 					t.Fatal(err)
 				}

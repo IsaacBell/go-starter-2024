@@ -5,7 +5,7 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo/v4"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/password/platform/pgsql"
 )
 
@@ -39,8 +39,8 @@ type Password struct {
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(orm.DB, int) (stems.User, error)
-	Update(orm.DB, stems.User) error
+	View(orm.DB, int) (template.User, error)
+	Update(orm.DB, template.User) error
 }
 
 // Securer represents security interface

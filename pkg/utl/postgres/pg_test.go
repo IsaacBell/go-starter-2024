@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/postgres"
 
 	"github.com/fortytw2/dockertest"
@@ -46,7 +47,7 @@ func TestNew(t *testing.T) {
 		t.Fatalf("Error establishing connection %v", err)
 	}
 
-	var user stems.User
+	var user template.User
 	db.Select(&user)
 
 	assert.NotNil(t, db)

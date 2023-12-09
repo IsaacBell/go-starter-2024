@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/jwt"
 
 	"github.com/stretchr/testify/assert"
@@ -14,7 +15,7 @@ func TestGenerateToken(t *testing.T) {
 		algo         string
 		secret       string
 		minSecretLen int
-		req          stems.User
+		req          template.User
 		wantErr      bool
 		want         string
 	}{
@@ -41,14 +42,14 @@ func TestGenerateToken(t *testing.T) {
 			algo:         "HS256",
 			secret:       "g0r$kt3$t1ng",
 			minSecretLen: 1,
-			req: stems.User{
-				Base: stems.Base{
+			req: template.User{
+				Base: template.Base{
 					ID: 1,
 				},
 				Username: "johndoe",
 				Email:    "johndoe@mail.com",
-				Role: &stems.Role{
-					AccessLevel: stems.SuperAdminRole,
+				Role: &template.Role{
+					AccessLevel: template.SuperAdminRole,
 				},
 				CompanyID:  1,
 				LocationID: 1,

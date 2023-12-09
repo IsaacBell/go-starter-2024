@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/password"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/password/transport"
 
@@ -67,10 +67,10 @@ func TestChangePassword(t *testing.T) {
 			},
 			id: "1",
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{Password: "oldPassword"}, nil
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{Password: "oldPassword"}, nil
 				},
-				UpdateFn: func(db orm.DB, usr stems.User) error {
+				UpdateFn: func(db orm.DB, usr template.User) error {
 					return nil
 				},
 			},

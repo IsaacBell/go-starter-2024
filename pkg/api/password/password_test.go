@@ -3,7 +3,7 @@ package password_test
 import (
 	"testing"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/password"
 
 	"github.com/go-pg/pg/v9/orm"
@@ -34,7 +34,7 @@ func TestChange(t *testing.T) {
 			args: args{id: 1},
 			rbac: &mock.RBAC{
 				EnforceUserFn: func(c echo.Context, id int) error {
-					return stems.ErrGeneric
+					return template.ErrGeneric
 				}},
 			wantErr: true,
 		},
@@ -47,11 +47,11 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
 					if id != 1 {
-						return stems.User{}, nil
+						return template.User{}, nil
 					}
-					return stems.User{}, stems.ErrGeneric
+					return template.User{}, template.ErrGeneric
 				},
 			},
 		},
@@ -64,8 +64,8 @@ func TestChange(t *testing.T) {
 				}},
 			wantErr: true,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
 						Password: "HashedPassword",
 					}, nil
 				},
@@ -85,8 +85,8 @@ func TestChange(t *testing.T) {
 				}},
 			wantErr: true,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
 						Password: "HashedPassword",
 					}, nil
 				},
@@ -108,12 +108,12 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
 						Password: "$2a$10$udRBroNGBeOYwSWCVzf6Lulg98uAoRCIi4t75VZg84xgw6EJbFNsG",
 					}, nil
 				},
-				UpdateFn: func(orm.DB, stems.User) error {
+				UpdateFn: func(orm.DB, template.User) error {
 					return nil
 				},
 			},

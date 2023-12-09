@@ -1,4 +1,4 @@
-package stems
+package template
 
 // AccessRole represents access role type
 type AccessRole int

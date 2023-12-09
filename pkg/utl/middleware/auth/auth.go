@@ -3,10 +3,9 @@ package auth
 import (
 	"net/http"
 
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
-
-	stems "github.com/Soapstone-Services/go-template-2024"
 )
 
 // TokenParser represents JWT token parser
@@ -30,7 +29,7 @@ func Middleware(tokenParser TokenParser) echo.MiddlewareFunc {
 			locationID := int(claims["l"].(float64))
 			username := claims["u"].(string)
 			email := claims["e"].(string)
-			role := stems.AccessRole(claims["r"].(float64))
+			role := template.AccessRole(claims["r"].(float64))
 
 			c.Set("id", id)
 			c.Set("company_id", companyID)

@@ -1,6 +1,7 @@
 package pgsql
 
 import (
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/go-pg/pg/v9/orm"
 )
 
@@ -8,8 +9,8 @@ import (
 type User struct{}
 
 // View returns single user by ID
-func (u User) View(db orm.DB, id int) (stems.User, error) {
-	var user stems.User
+func (u User) View(db orm.DB, id int) (template.User, error) {
+	var user template.User
 	sql := `SELECT "user".*, "role"."id" AS "role__id", "role"."access_level" AS "role__access_level", "role"."name" AS "role__name" 
 	FROM "users" AS "user" LEFT JOIN "roles" AS "role" ON "role"."id" = "user"."role_id" 
 	WHERE ("user"."id" = ? and deleted_at is null)`
@@ -18,8 +19,8 @@ func (u User) View(db orm.DB, id int) (stems.User, error) {
 }
 
 // FindByUsername queries for single user by username
-func (u User) FindByUsername(db orm.DB, uname string) (stems.User, error) {
-	var user stems.User
+func (u User) FindByUsername(db orm.DB, uname string) (template.User, error) {
+	var user template.User
 	sql := `SELECT "user".*, "role"."id" AS "role__id", "role"."access_level" AS "role__access_level", "role"."name" AS "role__name" 
 	FROM "users" AS "user" LEFT JOIN "roles" AS "role" ON "role"."id" = "user"."role_id" 
 	WHERE ("user"."username" = ? and deleted_at is null)`
@@ -28,8 +29,8 @@ func (u User) FindByUsername(db orm.DB, uname string) (stems.User, error) {
 }
 
 // FindByToken queries for single user by token
-func (u User) FindByToken(db orm.DB, token string) (stems.User, error) {
-	var user stems.User
+func (u User) FindByToken(db orm.DB, token string) (template.User, error) {
+	var user template.User
 	sql := `SELECT "user".*, "role"."id" AS "role__id", "role"."access_level" AS "role__access_level", "role"."name" AS "role__name" 
 	FROM "users" AS "user" LEFT JOIN "roles" AS "role" ON "role"."id" = "user"."role_id" 
 	WHERE ("user"."token" = ? and deleted_at is null)`
@@ -38,6 +39,6 @@ func (u User) FindByToken(db orm.DB, token string) (stems.User, error) {
 }
 
 // Update updates user's info
-func (u User) Update(db orm.DB, user stems.User) error {
+func (u User) Update(db orm.DB, user template.User) error {
 	return db.Update(&user)
 }

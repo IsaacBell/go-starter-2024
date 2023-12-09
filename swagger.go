@@ -1,4 +1,4 @@
-package stems
+package template
 
 // Success response
 // swagger:response ok

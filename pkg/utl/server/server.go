@@ -5,6 +5,7 @@ import (
 	"crypto/subtle"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"os/signal"
@@ -34,43 +35,50 @@ func New() *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			username, password, ok := c.Request().BasicAuth()
+			if ok {
+				// TODO - remove after testing
+				fmt.Println("u: ", username)
+				fmt.Println("p: ", password)
+			} else {
+				return echo.NewHTTPError(
+					http.StatusUnauthorized,
+					"Please provide valid credentials",
+				)
+			}
+
+			authUsername := "changeme"
+			val, ok := os.LookupEnv("V1_AUTH_USER")
+			fmt.Println("au: ", authUsername)
+			if !ok {
+				fmt.Printf("HTTP Basic Auth username not set!\n")
+			} else {
+				authUsername = val
+			}
+
+			authPassword := "changeme"
+			val, ok = os.LookupEnv("V1_AUTH_PASS")
+			if !ok {
+				fmt.Printf("HTTP Basic Auth password not set!\n")
+			} else {
+				authPassword = val
+			}
+
+			if subtle.ConstantTimeCompare([]byte(username), []byte(authUsername)) == 1 &&
+				subtle.ConstantTimeCompare([]byte(password), []byte(authPassword)) == 1 {
+				return next(c)
+			}
+
+			return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
+		}
+	})
+
 	v1 := e.Group("/v1")
+	v1.POST("/upload", upload)
 	v1.GET("/", healthCheck)
 	v1.GET("/health", healthCheck)
-
-	/* TODO: uncomment and test */
-	v1.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
-		if subtle.ConstantTimeCompare([]byte(username), []byte("changeme")) == 1 &&
-			subtle.ConstantTimeCompare([]byte(password), []byte("changeme")) == 1 {
-			return true, nil
-		}
-		fmt.Println("HERE")
-		authUsername := "changeme"
-		val, ok := os.LookupEnv("V1_AUTH_USER")
-		fmt.Println("au: ", authUsername)
-		if !ok {
-			fmt.Printf("HTTP Basic Auth username not set!\n")
-		} else {
-			authUsername = val
-		}
-
-		// authPassword := "changeme"
-		// val, ok = os.LookupEnv("V1_AUTH_PASS")
-		// if !ok {
-		// 	fmt.Printf("HTTP Basic Auth password not set!\n")
-		// } else {
-		// 	authPassword = val
-		// }
-
-		// if username == authUsername && password == authPassword {
-		if username == "changeme" && password == "changeme" {
-			return true, nil
-		}
-		fmt.Println("u: ", username)
-		fmt.Println("p: ", password)
-
-		return false, nil
-	}))
 
 	// expose metrics for analytics collection
 	// see Prometheus: https://prometheus.io/
@@ -79,7 +87,6 @@ func New() *echo.Echo {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.GET("/", healthCheck)
-	
 
 	e.Validator = &CustomValidator{V: validator.New()}
 	custErr := &customErrHandler{e: e}
@@ -107,6 +114,41 @@ func healthCheck(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")
 	}
 	return c.String(http.StatusOK, "OK")
+}
+
+func upload(c echo.Context) error {
+	// Read form fields
+	name := c.FormValue("name")
+	email := c.FormValue("description")
+
+	//-----------
+	// Read file
+	//-----------
+
+	// Source
+	file, err := c.FormFile("file")
+	if err != nil {
+		return err
+	}
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	// Destination
+	dst, err := os.Create(file.Filename)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copy
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+
+	return c.HTML(http.StatusOK, fmt.Sprintf("<p>File %s uploaded successfully with fields name=%s and email=%s.</p>", file.Filename, name, email))
 }
 
 func isProductionEnv() bool {

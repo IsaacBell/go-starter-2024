@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/user"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/user/transport"
 
@@ -25,7 +25,7 @@ func TestCreate(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   *stems.User
+		wantResp   *template.User
 		udb        *mockdb.User
 		rbac       *mock.RBAC
 		sec        *mock.Secure
@@ -44,7 +44,7 @@ func TestCreate(t *testing.T) {
 			name: "Fail on invalid role",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":50}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID stems.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID template.AccessRole, companyID, locationID int) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -54,7 +54,7 @@ func TestCreate(t *testing.T) {
 			name: "Fail on RBAC",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID stems.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID template.AccessRole, companyID, locationID int) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -65,12 +65,12 @@ func TestCreate(t *testing.T) {
 			name: "Success",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID stems.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID template.AccessRole, companyID, locationID int) error {
 					return nil
 				},
 			},
 			udb: &mockdb.User{
-				CreateFn: func(db orm.DB, usr stems.User) (stems.User, error) {
+				CreateFn: func(db orm.DB, usr template.User) (template.User, error) {
 					usr.ID = 1
 					usr.CreatedAt = mock.TestTime(2018)
 					usr.UpdatedAt = mock.TestTime(2018)
@@ -82,8 +82,8 @@ func TestCreate(t *testing.T) {
 					return "h4$h3d"
 				},
 			},
-			wantResp: &stems.User{
-				Base: stems.Base{
+			wantResp: &template.User{
+				Base: template.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(2018),
 					UpdatedAt: mock.TestTime(2018),
@@ -113,7 +113,7 @@ func TestCreate(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(stems.User)
+				response := new(template.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -126,8 +126,8 @@ func TestCreate(t *testing.T) {
 
 func TestList(t *testing.T) {
 	type listResponse struct {
-		Users []stems.User `json:"users"`
-		Page  int          `json:"page"`
+		Users []template.User `json:"users"`
+		Page  int             `json:"page"`
 	}
 	cases := []struct {
 		name       string
@@ -147,12 +147,12 @@ func TestList(t *testing.T) {
 			name: "Fail on query list",
 			req:  `?limit=100&page=1`,
 			rbac: &mock.RBAC{
-				UserFn: func(c echo.Context) stems.AuthUser {
-					return stems.AuthUser{
+				UserFn: func(c echo.Context) template.AuthUser {
+					return template.AuthUser{
 						ID:         1,
 						CompanyID:  2,
 						LocationID: 3,
-						Role:       stems.UserRole,
+						Role:       template.UserRole,
 						Email:      "john@mail.com",
 					}
 				}},
@@ -162,21 +162,21 @@ func TestList(t *testing.T) {
 			name: "Success",
 			req:  `?limit=100&page=1`,
 			rbac: &mock.RBAC{
-				UserFn: func(c echo.Context) stems.AuthUser {
-					return stems.AuthUser{
+				UserFn: func(c echo.Context) template.AuthUser {
+					return template.AuthUser{
 						ID:         1,
 						CompanyID:  2,
 						LocationID: 3,
-						Role:       stems.SuperAdminRole,
+						Role:       template.SuperAdminRole,
 						Email:      "john@mail.com",
 					}
 				}},
 			udb: &mockdb.User{
-				ListFn: func(db orm.DB, q *stems.ListQuery, p stems.Pagination) ([]stems.User, error) {
+				ListFn: func(db orm.DB, q *template.ListQuery, p template.Pagination) ([]template.User, error) {
 					if p.Limit == 100 && p.Offset == 100 {
-						return []stems.User{
+						return []template.User{
 							{
-								Base: stems.Base{
+								Base: template.Base{
 									ID:        10,
 									CreatedAt: mock.TestTime(2001),
 									UpdatedAt: mock.TestTime(2002),
@@ -186,14 +186,14 @@ func TestList(t *testing.T) {
 								Email:      "john@mail.com",
 								CompanyID:  2,
 								LocationID: 3,
-								Role: &stems.Role{
+								Role: &template.Role{
 									ID:          1,
 									AccessLevel: 1,
 									Name:        "SUPER_ADMIN",
 								},
 							},
 							{
-								Base: stems.Base{
+								Base: template.Base{
 									ID:        11,
 									CreatedAt: mock.TestTime(2004),
 									UpdatedAt: mock.TestTime(2005),
@@ -203,7 +203,7 @@ func TestList(t *testing.T) {
 								Email:      "joanna@mail.com",
 								CompanyID:  1,
 								LocationID: 2,
-								Role: &stems.Role{
+								Role: &template.Role{
 									ID:          2,
 									AccessLevel: 2,
 									Name:        "ADMIN",
@@ -211,14 +211,14 @@ func TestList(t *testing.T) {
 							},
 						}, nil
 					}
-					return nil, stems.ErrGeneric
+					return nil, template.ErrGeneric
 				},
 			},
 			wantStatus: http.StatusOK,
 			wantResp: &listResponse{
-				Users: []stems.User{
+				Users: []template.User{
 					{
-						Base: stems.Base{
+						Base: template.Base{
 							ID:        10,
 							CreatedAt: mock.TestTime(2001),
 							UpdatedAt: mock.TestTime(2002),
@@ -228,14 +228,14 @@ func TestList(t *testing.T) {
 						Email:      "john@mail.com",
 						CompanyID:  2,
 						LocationID: 3,
-						Role: &stems.Role{
+						Role: &template.Role{
 							ID:          1,
 							AccessLevel: 1,
 							Name:        "SUPER_ADMIN",
 						},
 					},
 					{
-						Base: stems.Base{
+						Base: template.Base{
 							ID:        11,
 							CreatedAt: mock.TestTime(2004),
 							UpdatedAt: mock.TestTime(2005),
@@ -245,7 +245,7 @@ func TestList(t *testing.T) {
 						Email:      "joanna@mail.com",
 						CompanyID:  1,
 						LocationID: 2,
-						Role: &stems.Role{
+						Role: &template.Role{
 							ID:          2,
 							AccessLevel: 2,
 							Name:        "ADMIN",
@@ -285,7 +285,7 @@ func TestView(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   stems.User
+		wantResp   template.User
 		udb        *mockdb.User
 		rbac       *mock.RBAC
 		sec        *mock.Secure
@@ -314,9 +314,9 @@ func TestView(t *testing.T) {
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Base: stems.Base{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Base: template.Base{
 							ID:        1,
 							CreatedAt: mock.TestTime(2000),
 							UpdatedAt: mock.TestTime(2000),
@@ -328,8 +328,8 @@ func TestView(t *testing.T) {
 				},
 			},
 			wantStatus: http.StatusOK,
-			wantResp: stems.User{
-				Base: stems.Base{
+			wantResp: template.User{
+				Base: template.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(2000),
 					UpdatedAt: mock.TestTime(2000),
@@ -355,7 +355,7 @@ func TestView(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp.ID != 0 {
-				response := new(stems.User)
+				response := new(template.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -372,7 +372,7 @@ func TestUpdate(t *testing.T) {
 		req        string
 		id         string
 		wantStatus int
-		wantResp   stems.User
+		wantResp   template.User
 		udb        *mockdb.User
 		rbac       *mock.RBAC
 		sec        *mock.Secure
@@ -409,9 +409,9 @@ func TestUpdate(t *testing.T) {
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Base: stems.Base{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Base: template.Base{
 							ID:        1,
 							CreatedAt: mock.TestTime(2000),
 							UpdatedAt: mock.TestTime(2000),
@@ -424,15 +424,15 @@ func TestUpdate(t *testing.T) {
 						Mobile:    "991991",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr stems.User) error {
+				UpdateFn: func(db orm.DB, usr template.User) error {
 					usr.UpdatedAt = mock.TestTime(2010)
 					usr.Mobile = "991991"
 					return nil
 				},
 			},
 			wantStatus: http.StatusOK,
-			wantResp: stems.User{
-				Base: stems.Base{
+			wantResp: template.User{
+				Base: template.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(2000),
 					UpdatedAt: mock.TestTime(2000),
@@ -465,7 +465,7 @@ func TestUpdate(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp.ID != 0 {
-				response := new(stems.User)
+				response := new(template.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -494,16 +494,16 @@ func TestDelete(t *testing.T) {
 			name: "Fail on RBAC",
 			id:   `1`,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Role: &stems.Role{
-							AccessLevel: stems.CompanyAdminRole,
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Role: &template.Role{
+							AccessLevel: template.CompanyAdminRole,
 						},
 					}, nil
 				},
 			},
 			rbac: &mock.RBAC{
-				IsLowerRoleFn: func(echo.Context, stems.AccessRole) error {
+				IsLowerRoleFn: func(echo.Context, template.AccessRole) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -513,19 +513,19 @@ func TestDelete(t *testing.T) {
 			name: "Success",
 			id:   `1`,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Role: &stems.Role{
-							AccessLevel: stems.CompanyAdminRole,
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Role: &template.Role{
+							AccessLevel: template.CompanyAdminRole,
 						},
 					}, nil
 				},
-				DeleteFn: func(orm.DB, stems.User) error {
+				DeleteFn: func(orm.DB, template.User) error {
 					return nil
 				},
 			},
 			rbac: &mock.RBAC{
-				IsLowerRoleFn: func(echo.Context, stems.AccessRole) error {
+				IsLowerRoleFn: func(echo.Context, template.AccessRole) error {
 					return nil
 				},
 			},

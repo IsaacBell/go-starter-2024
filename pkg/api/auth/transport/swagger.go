@@ -1,5 +1,7 @@
 package transport
 
+import "github.com/Soapstone-Services/go-template-2024"
+
 // Login request
 // swagger:parameters login
 type swaggLoginReq struct {
@@ -12,7 +14,7 @@ type swaggLoginReq struct {
 type swaggLoginResp struct {
 	// in:body
 	Body struct {
-		*stems.AuthToken
+		*template.AuthToken
 	}
 }
 
@@ -21,6 +23,6 @@ type swaggLoginResp struct {
 type swaggRefreshResp struct {
 	// in:body
 	Body struct {
-		*stems.RefreshToken
+		*template.RefreshToken
 	}
 }

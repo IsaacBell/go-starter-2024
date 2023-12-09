@@ -1,9 +1,8 @@
 package rbac
 
 import (
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/labstack/echo/v4"
-
-	stems "github.com/Soapstone-Services/go-template-2024"
 )
 
 // Service is RBAC application service
@@ -17,14 +16,14 @@ func checkBool(b bool) error {
 }
 
 // User returns user data stored in jwt token
-func (s Service) User(c echo.Context) stems.AuthUser {
+func (s Service) User(c echo.Context) template.AuthUser {
 	id := c.Get("id").(int)
 	companyID := c.Get("company_id").(int)
 	locationID := c.Get("location_id").(int)
 	user := c.Get("username").(string)
 	email := c.Get("email").(string)
-	role := c.Get("role").(stems.AccessRole)
-	return stems.AuthUser{
+	role := c.Get("role").(template.AccessRole)
+	return template.AuthUser{
 		ID:         id,
 		Username:   user,
 		CompanyID:  companyID,
@@ -35,8 +34,8 @@ func (s Service) User(c echo.Context) stems.AuthUser {
 }
 
 // EnforceRole authorizes request by AccessRole
-func (s Service) EnforceRole(c echo.Context, r stems.AccessRole) error {
-	return checkBool(!(c.Get("role").(stems.AccessRole) > r))
+func (s Service) EnforceRole(c echo.Context, r template.AccessRole) error {
+	return checkBool(!(c.Get("role").(template.AccessRole) > r))
 }
 
 // EnforceUser checks whether the request to change user data is done by the same user
@@ -56,7 +55,7 @@ func (s Service) EnforceCompany(c echo.Context, ID int) error {
 	if s.isAdmin(c) {
 		return nil
 	}
-	if err := s.EnforceRole(c, stems.CompanyAdminRole); err != nil {
+	if err := s.EnforceRole(c, template.CompanyAdminRole); err != nil {
 		return err
 	}
 	return checkBool(c.Get("company_id").(int) == ID)
@@ -68,24 +67,24 @@ func (s Service) EnforceLocation(c echo.Context, ID int) error {
 	if s.isCompanyAdmin(c) {
 		return nil
 	}
-	if err := s.EnforceRole(c, stems.LocationAdminRole); err != nil {
+	if err := s.EnforceRole(c, template.LocationAdminRole); err != nil {
 		return err
 	}
 	return checkBool(c.Get("location_id").(int) == ID)
 }
 
 func (s Service) isAdmin(c echo.Context) bool {
-	return !(c.Get("role").(stems.AccessRole) > stems.AdminRole)
+	return !(c.Get("role").(template.AccessRole) > template.AdminRole)
 }
 
 func (s Service) isCompanyAdmin(c echo.Context) bool {
 	// Must query company ID in database for the given user
-	return !(c.Get("role").(stems.AccessRole) > stems.CompanyAdminRole)
+	return !(c.Get("role").(template.AccessRole) > template.CompanyAdminRole)
 }
 
 // AccountCreate performs auth check when creating a new account
 // Location admin cannot create accounts, needs to be fixed on EnforceLocation function
-func (s Service) AccountCreate(c echo.Context, roleID stems.AccessRole, companyID, locationID int) error {
+func (s Service) AccountCreate(c echo.Context, roleID template.AccessRole, companyID, locationID int) error {
 	if err := s.EnforceLocation(c, locationID); err != nil {
 		return err
 	}
@@ -94,6 +93,6 @@ func (s Service) AccountCreate(c echo.Context, roleID stems.AccessRole, companyI
 
 // IsLowerRole checks whether the requesting user has higher role than the user it wants to change
 // Used for account creation/deletion
-func (s Service) IsLowerRole(c echo.Context, r stems.AccessRole) error {
-	return checkBool(c.Get("role").(stems.AccessRole) < r)
+func (s Service) IsLowerRole(c echo.Context, r template.AccessRole) error {
+	return checkBool(c.Get("role").(template.AccessRole) < r)
 }

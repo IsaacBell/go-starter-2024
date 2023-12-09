@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/secure"
 
 	"github.com/go-pg/pg/v9"
@@ -28,7 +29,7 @@ func main() {
 	db := pg.Connect(u)
 	_, err = db.Exec("SELECT 1")
 	checkErr(err)
-	createSchema(db, &stems.Company{}, &stems.Location{}, &stems.Role{}, &stems.User{})
+	createSchema(db, &template.Company{}, &template.Location{}, &template.Role{}, &template.User{})
 
 	for _, v := range queries[0 : len(queries)-1] {
 		_, err := db.Exec(v)

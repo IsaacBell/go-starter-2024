@@ -4,21 +4,21 @@ package user
 import (
 	"github.com/labstack/echo/v4"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/query"
 )
 
 // Create creates a new user account
-func (u User) Create(c echo.Context, req stems.User) (stems.User, error) {
+func (u User) Create(c echo.Context, req template.User) (template.User, error) {
 	if err := u.rbac.AccountCreate(c, req.RoleID, req.CompanyID, req.LocationID); err != nil {
-		return stems.User{}, err
+		return template.User{}, err
 	}
 	req.Password = u.sec.Hash(req.Password)
 	return u.udb.Create(u.db, req)
 }
 
 // List returns list of users
-func (u User) List(c echo.Context, p stems.Pagination) ([]stems.User, error) {
+func (u User) List(c echo.Context, p template.Pagination) ([]template.User, error) {
 	au := u.rbac.User(c)
 	q, err := query.List(au)
 	if err != nil {
@@ -28,9 +28,9 @@ func (u User) List(c echo.Context, p stems.Pagination) ([]stems.User, error) {
 }
 
 // View returns single user
-func (u User) View(c echo.Context, id int) (stems.User, error) {
+func (u User) View(c echo.Context, id int) (template.User, error) {
 	if err := u.rbac.EnforceUser(c, id); err != nil {
-		return stems.User{}, err
+		return template.User{}, err
 	}
 	return u.udb.View(u.db, id)
 }
@@ -58,19 +58,19 @@ type Update struct {
 }
 
 // Update updates user's contact information
-func (u User) Update(c echo.Context, r Update) (stems.User, error) {
+func (u User) Update(c echo.Context, r Update) (template.User, error) {
 	if err := u.rbac.EnforceUser(c, r.ID); err != nil {
-		return stems.User{}, err
+		return template.User{}, err
 	}
 
-	if err := u.udb.Update(u.db, stems.User{
-		Base:      stems.Base{ID: r.ID},
+	if err := u.udb.Update(u.db, template.User{
+		Base:      template.Base{ID: r.ID},
 		FirstName: r.FirstName,
 		LastName:  r.LastName,
 		Mobile:    r.Mobile,
 		Address:   r.Address,
 	}); err != nil {
-		return stems.User{}, err
+		return template.User{}, err
 	}
 
 	return u.udb.View(u.db, r.ID)

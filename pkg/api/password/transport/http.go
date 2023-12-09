@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/password"
 
 	"github.com/labstack/echo/v4"
@@ -67,7 +67,7 @@ type changeReq struct {
 func (h *HTTP) change(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return stems.ErrBadRequest
+		return template.ErrBadRequest
 	}
 
 	p := new(changeReq)

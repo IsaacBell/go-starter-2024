@@ -6,7 +6,7 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo/v4"
 
-	stems "github.com/Soapstone-Services/go-template-2024"
+	"github.com/Soapstone-Services/go-template-2024"
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock/mockdb"
@@ -22,7 +22,7 @@ func TestAuthenticate(t *testing.T) {
 	cases := []struct {
 		name     string
 		args     args
-		wantData stems.AuthToken
+		wantData template.AuthToken
 		wantErr  bool
 		udb      *mockdb.User
 		jwt      *mock.JWT
@@ -33,8 +33,8 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (stems.User, error) {
-					return stems.User{}, stems.ErrGeneric
+				FindByUsernameFn: func(db orm.DB, user string) (template.User, error) {
+					return template.User{}, template.ErrGeneric
 				},
 			},
 		},
@@ -43,8 +43,8 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "notHashedPassword"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (stems.User, error) {
-					return stems.User{Username: user}, nil
+				FindByUsernameFn: func(db orm.DB, user string) (template.User, error) {
+					return template.User{Username: user}, nil
 				},
 			},
 			sec: &mock.Secure{
@@ -58,8 +58,8 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (stems.User, error) {
-					return stems.User{
+				FindByUsernameFn: func(db orm.DB, user string) (template.User, error) {
+					return template.User{
 						Username: user,
 						Password: "pass",
 						Active:   false,
@@ -77,8 +77,8 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (stems.User, error) {
-					return stems.User{
+				FindByUsernameFn: func(db orm.DB, user string) (template.User, error) {
+					return template.User{
 						Username: user,
 						Password: "pass",
 						Active:   true,
@@ -91,8 +91,8 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u stems.User) (string, error) {
-					return "", stems.ErrGeneric
+				GenerateTokenFn: func(u template.User) (string, error) {
+					return "", template.ErrGeneric
 				},
 			},
 		},
@@ -101,15 +101,15 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (stems.User, error) {
-					return stems.User{
+				FindByUsernameFn: func(db orm.DB, user string) (template.User, error) {
+					return template.User{
 						Username: user,
 						Password: "pass",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u stems.User) error {
-					return stems.ErrGeneric
+				UpdateFn: func(db orm.DB, u template.User) error {
+					return template.ErrGeneric
 				},
 			},
 			sec: &mock.Secure{
@@ -121,7 +121,7 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u stems.User) (string, error) {
+				GenerateTokenFn: func(u template.User) (string, error) {
 					return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", nil
 				},
 			},
@@ -130,19 +130,19 @@ func TestAuthenticate(t *testing.T) {
 			name: "Success",
 			args: args{user: "juzernejm", pass: "pass"},
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (stems.User, error) {
-					return stems.User{
+				FindByUsernameFn: func(db orm.DB, user string) (template.User, error) {
+					return template.User{
 						Username: user,
 						Password: "password",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u stems.User) error {
+				UpdateFn: func(db orm.DB, u template.User) error {
 					return nil
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u stems.User) (string, error) {
+				GenerateTokenFn: func(u template.User) (string, error) {
 					return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", nil
 				},
 			},
@@ -154,7 +154,7 @@ func TestAuthenticate(t *testing.T) {
 					return "refreshtoken"
 				},
 			},
-			wantData: stems.AuthToken{
+			wantData: template.AuthToken{
 				Token:        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
 				RefreshToken: "refreshtoken",
 			},
@@ -164,8 +164,8 @@ func TestAuthenticate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := auth.New(nil, tt.udb, tt.jwt, tt.sec, nil)
 			token, err := s.Authenticate(nil, tt.args.user, tt.args.pass)
-			if tt.wantData.RefreshToken != "" {
-				tt.wantData.RefreshToken = token.RefreshToken
+			if tt.wanttemplate.RefreshToken != "" {
+				tt.wanttemplate.RefreshToken = token.RefreshToken
 				assert.Equal(t, tt.wantData, token)
 			}
 			assert.Equal(t, tt.wantErr, err != nil)
@@ -190,8 +190,8 @@ func TestRefresh(t *testing.T) {
 			args:    args{token: "refreshtoken"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (stems.User, error) {
-					return stems.User{}, stems.ErrGeneric
+				FindByTokenFn: func(db orm.DB, token string) (template.User, error) {
+					return template.User{}, template.ErrGeneric
 				},
 			},
 		},
@@ -200,8 +200,8 @@ func TestRefresh(t *testing.T) {
 			args:    args{token: "refreshtoken"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (stems.User, error) {
-					return stems.User{
+				FindByTokenFn: func(db orm.DB, token string) (template.User, error) {
+					return template.User{
 						Username: "username",
 						Password: "password",
 						Active:   true,
@@ -210,8 +210,8 @@ func TestRefresh(t *testing.T) {
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u stems.User) (string, error) {
-					return "", stems.ErrGeneric
+				GenerateTokenFn: func(u template.User) (string, error) {
+					return "", template.ErrGeneric
 				},
 			},
 		},
@@ -219,8 +219,8 @@ func TestRefresh(t *testing.T) {
 			name: "Success",
 			args: args{token: "refreshtoken"},
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (stems.User, error) {
-					return stems.User{
+				FindByTokenFn: func(db orm.DB, token string) (template.User, error) {
+					return template.User{
 						Username: "username",
 						Password: "password",
 						Active:   true,
@@ -229,7 +229,7 @@ func TestRefresh(t *testing.T) {
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u stems.User) (string, error) {
+				GenerateTokenFn: func(u template.User) (string, error) {
 					return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", nil
 				},
 			},
@@ -249,7 +249,7 @@ func TestRefresh(t *testing.T) {
 func TestMe(t *testing.T) {
 	cases := []struct {
 		name     string
-		wantData stems.User
+		wantData template.User
 		udb      *mockdb.User
 		rbac     *mock.RBAC
 		wantErr  bool
@@ -257,36 +257,36 @@ func TestMe(t *testing.T) {
 		{
 			name: "Success",
 			rbac: &mock.RBAC{
-				UserFn: func(echo.Context) stems.AuthUser {
-					return stems.AuthUser{ID: 9}
+				UserFn: func(echo.Context) template.AuthUser {
+					return template.AuthUser{ID: 9}
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (stems.User, error) {
-					return stems.User{
-						Base: stems.Base{
+				ViewFn: func(db orm.DB, id int) (template.User, error) {
+					return template.User{
+						Base: template.Base{
 							ID:        id,
 							CreatedAt: mock.TestTime(1999),
 							UpdatedAt: mock.TestTime(2000),
 						},
 						FirstName: "John",
 						LastName:  "Doe",
-						Role: &stems.Role{
-							AccessLevel: stems.UserRole,
+						Role: &template.Role{
+							AccessLevel: template.UserRole,
 						},
 					}, nil
 				},
 			},
-			wantData: stems.User{
-				Base: stems.Base{
+			wantData: template.User{
+				Base: template.Base{
 					ID:        9,
 					CreatedAt: mock.TestTime(1999),
 					UpdatedAt: mock.TestTime(2000),
 				},
 				FirstName: "John",
 				LastName:  "Doe",
-				Role: &stems.Role{
-					AccessLevel: stems.UserRole,
+				Role: &template.Role{
+					AccessLevel: template.UserRole,
 				},
 			},
 		},
