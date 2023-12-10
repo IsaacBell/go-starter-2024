@@ -6,10 +6,11 @@
     "configurations": [
         {
             "name": "Launch Package",
+            "preLaunchTask": "start",
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "cmd/api/main.go",
+            "program": "go version",
             "trace": "verbose"
         }
     ]

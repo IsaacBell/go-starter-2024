@@ -1,6 +1,6 @@
 # Go Starter 2024
 
-A starter for Go API micro-services. 
+A template for high-powered Go API micro-services. This app h has high RAM requirements, so you will need a strong machine or VM.
 
 ## Pre-Requisites
 
