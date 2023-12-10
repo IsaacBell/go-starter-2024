@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-docker start postgresDB15
-
-docker-compose --env-file .env up
+soapstone_compose="docker-compose --env-file .env"
+$soapstone_compose stop && $soapstone_compose down && $soapstone_compose up
 
 go clean && go build && go run ./cmd/api/main.go
