@@ -1,13 +1,14 @@
 package api
 
 import (
-	// "crypto/subtle"
 	"crypto/sha1"
-	"fmt"
+	"errors"
 	"os"
 	"strings"
 
-	// "github.com/Soapstone-Services/go-template-2024/pkg/utl/zlog"
+	"github.com/go-pg/pg/v9"
+	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
+
 	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
 	al "github.com/Soapstone-Services/go-template-2024/pkg/api/auth/logging"
 	at "github.com/Soapstone-Services/go-template-2024/pkg/api/auth/transport"
@@ -25,28 +26,27 @@ import (
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/secure"
 
 	"github.com/labstack/echo/v4"
-	// "github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/rs/zerolog"
 	"github.com/ziflex/lecho/v3"
 
+	errorUtils "github.com/Soapstone-Services/go-template-2024/pkg/utl/errors"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/jwt"
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/server"
 )
 
 // Start starts the API service
 func Start(cfg *config.Configuration) error {
-	url := postgresAddr() // try to use .env first
+	postgresDb, err := configurePG(cfg)
+	errorUtils.CheckErr(err)
 
-	if url == "" {
-		url = cfg.DB.Url // fall back to yaml config
-	}
-
-	db, err := postgres.New(cfg.DB.Url, cfg.DB.Timeout, cfg.DB.LogQueries)
+	pointer, err := influxClient()
+	influx := *pointer
 	if err != nil {
-		return err
+		defer influx.Close()
+	} else {
+		errorUtils.CheckErr(err)
 	}
-	fmt.Println("DB Addr: ", db.Options().Addr)
 
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
 	rbac := rbac.Service{}
@@ -97,13 +97,13 @@ func Start(cfg *config.Configuration) error {
 
 	authMiddleware := authMw.Middleware(jwt)
 
-	at.NewHTTP(al.New(auth.Initialize(db, jwt, sec, rbac), logger), e, authMiddleware)
+	at.NewHTTP(al.New(auth.Initialize(postgresDb, jwt, sec, rbac), logger), e, authMiddleware)
 
 	v1 := e.Group("/v1")
 	// v1.Use(authMiddleware)
 
-	ut.NewHTTP(ul.New(user.Initialize(db, rbac, sec), logger), v1)
-	pt.NewHTTP(pl.New(password.Initialize(db, rbac, sec), logger), v1)
+	ut.NewHTTP(ul.New(user.Initialize(postgresDb, rbac, sec), logger), v1)
+	pt.NewHTTP(pl.New(password.Initialize(postgresDb, rbac, sec), logger), v1)
 
 	server.Start(e, &server.Config{
 		Port:                cfg.Server.Port,
@@ -113,6 +113,35 @@ func Start(cfg *config.Configuration) error {
 	})
 
 	return nil
+}
+
+func configurePG(cfg *config.Configuration) (*pg.DB, error) {
+	url := postgresAddr() // try to use .env first
+
+	if url == "" {
+		url = cfg.DB.Url // fall back to yaml config
+	}
+
+	postgresDb, err := postgres.New(cfg.DB.Url, cfg.DB.Timeout, cfg.DB.LogQueries)
+	// fmt.Println("DB Addr: ", postgresDb.Options().Addr)
+
+	return postgresDb, err
+}
+
+func influxClient() (*influxdb2.Client, error) {
+	const bucket = "test"
+	const org = "soapstone"
+	// You can generate a Token from the "Tokens Tab" in the UI
+	token := os.Getenv("INFLUXDB_TOKEN")
+
+	hostUrl := os.Getenv("HOST")
+
+	if token == "" || hostUrl == "" {
+		return nil, errors.New("InfluxDB couldn't be located.")
+	}
+
+	client := influxdb2.NewClient(hostUrl, token)
+	return &client, nil
 }
 
 func isProd() bool {
@@ -125,7 +154,7 @@ func postgresAddr() string {
 	dbUrl  := os.Getenv("PG_URL")
 	dbName := os.Getenv("PG_DB")
 
-	if (user == "" || pass == "" || dbUrl == "" || dbName == "") {
+	if user == "" || pass == "" || dbUrl == "" || dbName == "" {
 		return ""
 	}
 

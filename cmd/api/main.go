@@ -8,6 +8,7 @@ import (
 	"github.com/Soapstone-Services/go-template-2024/pkg/api"
 
 	"github.com/Soapstone-Services/go-template-2024/pkg/utl/config"
+	errorUtils "github.com/Soapstone-Services/go-template-2024/pkg/utl/errors"
 )
 
 func main() {
@@ -15,13 +16,8 @@ func main() {
 	flag.Parse()
 
 	cfg, err := config.Load(*cfgPath)
-	checkErr(err)
+	errorUtils.CheckErr(err)
 
-	checkErr(api.Start(cfg))
+	errorUtils.CheckErr(api.Start(cfg))
 }
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err.Error())
-	}
-}
