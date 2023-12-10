@@ -5,14 +5,7 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: docker pull postgres:15.1
-  - command: docker run -d -p 5432:5432 --name dev -e POSTGRES_PASSWORD=pass1234 postgres:15.1
-  - command: sleep 0.5s &&
-  - command: docker start postgresDB15
-  # - command: go get && go build ./... && go test ./...
-  - command: go clean && go get && go build -o output && ./output
-image: 
-  gitpod/workspace-postgres
+  - init: bash start-server.sh
 ports:
-    - port: 0001-9999
+    - port: 7000-9999
       onOpen: notify
