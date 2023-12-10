@@ -8,7 +8,7 @@ You will need Docker and Go (1.7 or above) installed before setting up the app.
 
 ## Setup
 
-You must configure your environment before running the app. To configure the app as a default development environment, run the following command to generate a `.env` file.
+You must configure your environment before running the app. To run a default config, use the following command to set necessary environment variables.
 
 ```bash
 $ cp .env.example .env
@@ -16,25 +16,13 @@ $ cp .env.example .env
 
 ## Installation
 
-Install PostgreSQL.
-
-```bash
-$ docker pull postgres:15.1
-$ docker run -d -p 5432:5432 --name postgresDB15 -e POSTGRES_PASSWORD=pass1234 postgres:15.1
-$ docker start postgresDB15
-```
-
-Install InfluxDB.
-
-```bash
-$ docker-compose --env-file .env up
-```
-
 ## Running the App
 
 ```bash
-go clean && go build && go run ./cmd/api/main.go
+$ bash start_server.sh
 ```
+
+Kill the app with Ctrl+C as normal.
 
 ## Accessing Tools
 
@@ -45,10 +33,6 @@ $ docker exec -it -u postgres postgresDB15 psql
 ```
 
 Connect to InfluxDB:
-
-```bash
-$ docker-compose --env-file dev_influxdb.env up
-```
 
 ## Code Considerations
 
@@ -111,7 +95,6 @@ Instead of passing database client as `s.db` , inside this function pass it as `
 8. Utl directory contains helper packages and models. Packages such as mock, middleware, configuration, server are located here.
 
 ## Deployment
-
 
 
 ## Contributing
