@@ -12,3 +12,5 @@ tmp/*
 **.bak*
 .git.bak*
 .env
+notes*.txt
+notes*.md
