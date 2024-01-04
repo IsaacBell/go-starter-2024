@@ -15,7 +15,7 @@ import (
 
 // NewPGContainer instantiates new PostgreSQL docker container
 func NewPGContainer(t *testing.T) *dockertest.Container {
-	container, err := dockertest.RunContainer("postgres:alpine", "5432", func(addr string) error {
+	container, err := dockertest.RunContainer("postgres:alpine", "5439", func(addr string) error {
 		db, err := sql.Open("postgres", "postgres://postgres:postgres@"+addr+"?sslmode=disable")
 		fatalErr(t, err)
 
