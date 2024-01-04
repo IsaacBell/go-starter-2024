@@ -1,7 +1,7 @@
 database:
   log_queries: true
   timeout_seconds: 5
-  url: postgres://core:pass1234@localhost:5432/core_dev?sslmode=disable
+  url: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
 
 server:
   port: :3000
