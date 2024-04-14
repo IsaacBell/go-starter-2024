@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package basic;
+option go_package = "protogen/basic";
+
+message User {
+  uint32 id = 1;
+  string email = 2;
+  string username = 3;
+  bool is_active = 4;
+  bytes password = 5;
+  bytes password_confirmation = 6;
+  string uuid = 7;
+}

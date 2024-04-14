@@ -14,17 +14,30 @@ import (
 	basic "github.com/Soapstone-Services/go-template-2024/protogen/basic"
 )
 
+// simple protobuf example
 func checkProtobufHeartbeat() {
 	helloWorld := basic.Hello {
 		Name: "Hello World!",
 	}
 
 	log.Println("===============================================")
-	log.Println(&helloWorld)
+	log.Println("protobuffers are working: ", &helloWorld)
+
+	u := basic.User {
+		Id: 0,
+		Username: "Jane Doe",
+		IsActive: true,
+		Email: "user@example.com",
+	}
+
+	log.Println("---")
+	log.Println("example user data: ", &u)
 	log.Println("===============================================")
 }
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
+
 	cfgPath := flag.String("p", "./conf.local.yaml", "Path to config file")
 	flag.Parse()
 
@@ -32,7 +45,7 @@ func main() {
 	errorUtils.CheckErr(err)
 
 	checkProtobufHeartbeat()
-	
+
 	errorUtils.CheckErr(api.Start(cfg))
 }
 
