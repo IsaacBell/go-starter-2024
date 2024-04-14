@@ -13,7 +13,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	container, err := dockertest.RunContainer("postgres:alpine", "5432", func(addr string) error {
+	container, err := dockertest.RunContainer("postgres:alpine", "5439", func(addr string) error {
 		db, err := sql.Open("postgres", "postgres://postgres:postgres@"+addr+"?sslmode=disable")
 		if err != nil {
 			return err

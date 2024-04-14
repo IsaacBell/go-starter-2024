@@ -2,6 +2,8 @@
 
 docker build -t soapstone-image .
 
+soapstone_compose="docker-compose --env-file .env"
+
 s_compose="docker-compose --env-file .env"
 $s_compose stop && $s_compose down && $s_compose up
 
