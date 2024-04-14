@@ -41,12 +41,11 @@ func Start(cfg *config.Configuration) error {
 	errorUtils.CheckErr(err)
 
 	pointer, err := influxClient()
-	influx := *pointer
 	if err != nil {
-		defer influx.Close()
-	} else {
-		errorUtils.CheckErr(err)
+			return err
 	}
+	influx := *pointer
+	defer influx.Close()
 
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
 	rbac := rbac.Service{}

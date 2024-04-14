@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package basic;
+option go_package = "protogen/basic";
+
+message Hello {
+  string name = 1;
+}

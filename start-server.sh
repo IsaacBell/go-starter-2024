@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
-soapstone_compose="docker-compose --env-file .env"
-$soapstone_compose stop && $soapstone_compose down && $soapstone_compose up
+docker build -t soapstone-image .
 
-go clean && go build && go run ./cmd/api/main.go
+s_compose="docker-compose --env-file .env"
+$s_compose stop && $s_compose down && $s_compose up
+
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go clean && go build
+go run ./cmd/api/main.go
