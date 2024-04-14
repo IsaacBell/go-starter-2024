@@ -133,7 +133,7 @@ func influxClient() (*influxdb2.Client, error) {
 	// You can generate a Token from the "Tokens Tab" in the UI
 	token := os.Getenv("INFLUXDB_TOKEN")
 
-	hostUrl := os.Getenv("HOST")
+	hostUrl := os.Getenv("INFLUXDB_URL")
 
 	if token == "" || hostUrl == "" {
 		return nil, errors.New("InfluxDB couldn't be located.")
