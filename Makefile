@@ -18,7 +18,7 @@ endif
 
 .PHONY: build
 build: clean
-	go build -o ./bin/${BIN_FILENAME} ./cmd
+	go build -o ./bin/${BIN_FILENAME} ./cmd/api
 
 .PHONY: execute
 execute: clean build
