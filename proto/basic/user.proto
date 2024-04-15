@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/any.proto";
+
 package basic;
 option go_package = "protogen/basic";
 
@@ -11,4 +13,19 @@ message User {
   bytes password = 5;
   bytes password_confirmation = 6;
   string uuid = 7;
+
+  repeated google.protobuf.Any communication_channels = 16;
+}
+
+message PaperMailChannel {
+  string address = 1;
+}
+
+message SocialMediaChannel {
+  string platform = 1;
+  string username = 2;
+}
+
+message EmailChannel {
+  string email = 1;
 }
