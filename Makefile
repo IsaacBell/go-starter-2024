@@ -32,15 +32,19 @@ docker-compose:
 
 .PHONY: install-dependencies
 install-dependencies:
+ifeq ($(shell uname), Darwin)
+	brew install protobuf
+else
 	sudo apt install -y protobuf-compiler
+endif
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
 .PHONY: setup-env
 setup-env:
-	export GOPATH=$HOME/go
-	export PATH=$PATH:$GOPATH/bin
+	export GOPATH=$(HOME)/go
+	export PATH=$(PATH):$(GOPATH)/bin
 
 .PHONY: execute
 execute: docker-build docker-compose setup-env install-dependencies build
-	sleep 2
+	sleep 1
 	./bin/${BIN_FILENAME}
