@@ -4,20 +4,20 @@ import (
 	"flag"
 	"log"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/api"
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/serialize"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/config"
+	"github.com/IsaacBell/go-template-2024/pkg/api"
+	"github.com/IsaacBell/go-template-2024/pkg/api/serialize"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/config"
 	_ "github.com/joho/godotenv/autoload"
 
-	errorUtils "github.com/Soapstone-Services/go-template-2024/pkg/utl/errors"
+	errorUtils "github.com/IsaacBell/go-template-2024/pkg/utl/errors"
 
-	basic "github.com/Soapstone-Services/go-template-2024/protogen/basic"
+	basic "github.com/IsaacBell/go-template-2024/protogen/basic"
 	"google.golang.org/protobuf/types/known/anypb"
 )
 
 // todo - move this to the "serialize" package
 func checkProtobufHeartbeat() {
-	helloWorld := basic.Hello {
+	helloWorld := basic.Hello{
 		Name: "Hello World!",
 	}
 
@@ -34,11 +34,11 @@ func checkProtobufHeartbeat() {
 		log.Fatalf("Failed to create Any message: %v", err)
 	}
 
-	u := basic.User {
-		Id: 0,
+	u := basic.User{
+		Id:       0,
 		Username: "Jane Doe",
 		IsActive: true,
-		Email: "user@example.com",
+		Email:    "user@example.com",
 		CommunicationChannels: []*anypb.Any{
 			serialize.PackAny(emailChannelAsAny),
 		},
@@ -65,4 +65,3 @@ func main() {
 
 	errorUtils.CheckErr(api.Start(cfg))
 }
-

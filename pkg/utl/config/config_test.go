@@ -3,7 +3,7 @@ package config_test
 import (
 	"testing"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/config"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/config"
 	"github.com/stretchr/testify/assert"
 )
 

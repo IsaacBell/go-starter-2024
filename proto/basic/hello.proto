@@ -3,6 +3,16 @@ syntax = "proto3";
 package basic;
 option go_package = "protogen/basic";
 
+import "google/protobuf/empty.proto";
+
+service HeartbeatService {
+  rpc CheckHeartbeat (google.protobuf.Empty) returns (Heartbeat) {}
+}
+
 message Hello {
   string name = 1;
+}
+
+message Heartbeat {
+  string message = 1;
 }

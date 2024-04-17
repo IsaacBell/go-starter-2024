@@ -17,7 +17,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 
-	// "github.com/Soapstone-Services/go-template-2024/pkg/utl/middleware/secure"
+	// "github.com/IsaacBell/go-template-2024/pkg/utl/middleware/secure"
 
 	echoPrometheus "github.com/globocom/echo-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

@@ -9,30 +9,30 @@ import (
 	"github.com/go-pg/pg/v9"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
-	al "github.com/Soapstone-Services/go-template-2024/pkg/api/auth/logging"
-	at "github.com/Soapstone-Services/go-template-2024/pkg/api/auth/transport"
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/password"
-	pl "github.com/Soapstone-Services/go-template-2024/pkg/api/password/logging"
-	pt "github.com/Soapstone-Services/go-template-2024/pkg/api/password/transport"
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/user"
-	ul "github.com/Soapstone-Services/go-template-2024/pkg/api/user/logging"
-	ut "github.com/Soapstone-Services/go-template-2024/pkg/api/user/transport"
-	authMw "github.com/Soapstone-Services/go-template-2024/pkg/utl/middleware/auth"
+	"github.com/IsaacBell/go-template-2024/pkg/api/auth"
+	al "github.com/IsaacBell/go-template-2024/pkg/api/auth/logging"
+	at "github.com/IsaacBell/go-template-2024/pkg/api/auth/transport"
+	"github.com/IsaacBell/go-template-2024/pkg/api/password"
+	pl "github.com/IsaacBell/go-template-2024/pkg/api/password/logging"
+	pt "github.com/IsaacBell/go-template-2024/pkg/api/password/transport"
+	"github.com/IsaacBell/go-template-2024/pkg/api/user"
+	ul "github.com/IsaacBell/go-template-2024/pkg/api/user/logging"
+	ut "github.com/IsaacBell/go-template-2024/pkg/api/user/transport"
+	authMw "github.com/IsaacBell/go-template-2024/pkg/utl/middleware/auth"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/config"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/postgres"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/rbac"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/secure"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/config"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/postgres"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/rbac"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/secure"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/rs/zerolog"
 	"github.com/ziflex/lecho/v3"
 
-	errorUtils "github.com/Soapstone-Services/go-template-2024/pkg/utl/errors"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/jwt"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/server"
+	errorUtils "github.com/IsaacBell/go-template-2024/pkg/utl/errors"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/jwt"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/server"
 )
 
 // Start starts the API service
@@ -42,7 +42,7 @@ func Start(cfg *config.Configuration) error {
 
 	pointer, err := influxClient()
 	if err != nil {
-			return err
+		return err
 	}
 	influx := *pointer
 	defer influx.Close()
@@ -148,9 +148,9 @@ func isProd() bool {
 }
 
 func postgresAddr() string {
-	user   := os.Getenv("PG_USER")
-	pass   := os.Getenv("PG_PASS")
-	dbUrl  := os.Getenv("PG_URL")
+	user := os.Getenv("PG_USER")
+	pass := os.Getenv("PG_PASS")
+	dbUrl := os.Getenv("PG_URL")
 	dbName := os.Getenv("PG_DB")
 
 	if user == "" || pass == "" || dbUrl == "" || dbName == "" {

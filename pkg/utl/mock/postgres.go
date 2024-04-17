@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-pg/pg/v9"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/postgres"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/postgres"
 
 	"github.com/fortytw2/dockertest"
 )

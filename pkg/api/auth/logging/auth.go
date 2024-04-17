@@ -5,8 +5,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/Soapstone-Services/go-template-2024"
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
+	"github.com/IsaacBell/go-template-2024"
+	"github.com/IsaacBell/go-template-2024/pkg/api/auth"
 )
 
 // New creates new auth logging service

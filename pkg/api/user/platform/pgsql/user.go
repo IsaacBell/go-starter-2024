@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Soapstone-Services/go-template-2024"
+	"github.com/IsaacBell/go-template-2024"
 	"github.com/go-pg/pg/v9"
 
 	"github.com/go-pg/pg/v9/orm"

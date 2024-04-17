@@ -4,7 +4,7 @@ import (
 	"crypto/sha1"
 	"testing"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/secure"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/secure"
 	"github.com/stretchr/testify/assert"
 )
 

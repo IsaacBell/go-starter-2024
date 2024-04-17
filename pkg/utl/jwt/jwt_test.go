@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Soapstone-Services/go-template-2024"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/jwt"
+	"github.com/IsaacBell/go-template-2024"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/jwt"
 
 	"github.com/stretchr/testify/assert"
 )

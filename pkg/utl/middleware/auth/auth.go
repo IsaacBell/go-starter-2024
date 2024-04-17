@@ -3,7 +3,7 @@ package auth
 import (
 	"net/http"
 
-	"github.com/Soapstone-Services/go-template-2024"
+	"github.com/IsaacBell/go-template-2024"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 )

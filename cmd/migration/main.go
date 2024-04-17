@@ -5,10 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Soapstone-Services/go-template-2024"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/secure"
-	errorUtils "github.com/Soapstone-Services/go-template-2024/pkg/utl/errors"
-
+	"github.com/IsaacBell/go-template-2024"
+	errorUtils "github.com/IsaacBell/go-template-2024/pkg/utl/errors"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/secure"
 
 	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"

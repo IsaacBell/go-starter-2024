@@ -1,7 +1,7 @@
 package rbac
 
 import (
-	"github.com/Soapstone-Services/go-template-2024"
+	"github.com/IsaacBell/go-template-2024"
 	"github.com/labstack/echo/v4"
 )
 

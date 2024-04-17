@@ -3,14 +3,14 @@ package password_test
 import (
 	"testing"
 
-	"github.com/Soapstone-Services/go-template-2024"
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/password"
+	"github.com/IsaacBell/go-template-2024"
+	"github.com/IsaacBell/go-template-2024/pkg/api/password"
 
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo/v4"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock/mockdb"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/mock"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/mock/mockdb"
 
 	"github.com/stretchr/testify/assert"
 )

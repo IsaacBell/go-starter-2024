@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/middleware/secure"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/middleware/secure"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

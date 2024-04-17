@@ -3,7 +3,7 @@ package transport
 import (
 	"net/http"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/auth"
+	"github.com/IsaacBell/go-template-2024/pkg/api/auth"
 	"github.com/labstack/echo/v4"
 	// todo - expose prometheus metrics
 	// "github.com/prometheus/client_golang/prometheus/promhttp"

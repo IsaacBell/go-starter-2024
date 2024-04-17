@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Soapstone-Services/go-template-2024"
+	"github.com/IsaacBell/go-template-2024"
 	"github.com/dgrijalva/jwt-go"
 )
 

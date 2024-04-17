@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Soapstone-Services/go-template-2024"
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/user/platform/pgsql"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock"
+	"github.com/IsaacBell/go-template-2024"
+	"github.com/IsaacBell/go-template-2024/pkg/api/user/platform/pgsql"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/mock"
 )
 
 func TestCreate(t *testing.T) {

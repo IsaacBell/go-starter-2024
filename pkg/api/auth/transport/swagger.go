@@ -1,6 +1,6 @@
 package transport
 
-import "github.com/Soapstone-Services/go-template-2024"
+import "github.com/IsaacBell/go-template-2024"
 
 // Login request
 // swagger:parameters login

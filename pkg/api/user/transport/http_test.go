@@ -7,13 +7,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Soapstone-Services/go-template-2024"
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/user"
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/user/transport"
+	"github.com/IsaacBell/go-template-2024"
+	"github.com/IsaacBell/go-template-2024/pkg/api/user"
+	"github.com/IsaacBell/go-template-2024/pkg/api/user/transport"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/mock/mockdb"
-	"github.com/Soapstone-Services/go-template-2024/pkg/utl/server"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/mock"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/mock/mockdb"
+	"github.com/IsaacBell/go-template-2024/pkg/utl/server"
 
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo/v4"

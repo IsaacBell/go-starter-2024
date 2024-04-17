@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/Soapstone-Services/go-template-2024/pkg/api/password"
+	"github.com/IsaacBell/go-template-2024/pkg/api/password"
 )
 
 // New creates new password logging service
